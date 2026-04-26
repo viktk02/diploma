@@ -1,6 +1,7 @@
 # import base64
 import os
 import uuid
+import re
 from django.utils.text import slugify
 from unidecode import unidecode
 from datetime import datetime
@@ -48,3 +49,10 @@ def upload_to_factory(folder: str):
 
 def current_year(request):
     return {'current_year': datetime.now().year}
+
+def slugify(text):
+    text = unidecode(text)
+    text = text.lower()
+    text = re.sub(r'[^a-z0-9\s-]', '', text)
+    text = re.sub(r'\s+', '-', text)
+    return text.strip('-')

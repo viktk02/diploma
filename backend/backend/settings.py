@@ -1,5 +1,6 @@
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 import os
 
 load_dotenv()
@@ -41,13 +42,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",  # для logout (blacklist refresh)
+    "corsheaders",
     'django_ckeditor_5',
     'core',
     'reports',
     'schedule',
+    'accounts',
+    'pages',
+    'nested_admin'
 ]
 
+AUTH_USER_MODEL = "accounts.User"
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,6 +65,32 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS":  True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = 'backend.urls'
