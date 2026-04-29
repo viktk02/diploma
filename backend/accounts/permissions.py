@@ -26,7 +26,6 @@ from rest_framework.permissions import BasePermission
 
 
 class IsRoot(BasePermission):
-    """Тільки Root може виконувати цю дію."""
     message = "Доступ лише для Root-адміністратора."
 
     def has_permission(self, request, view):
@@ -38,7 +37,6 @@ class IsRoot(BasePermission):
 
 
 class IsEditor(BasePermission):
-    """Root і Editor можуть виконувати цю дію."""
     message = "Доступ лише для авторизованих редакторів."
 
     def has_permission(self, request, view):

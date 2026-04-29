@@ -79,6 +79,12 @@ REST_FRAMEWORK = {
     ],
 }
 
+# Сесія закінчується через 8 годин (в секундах)
+SESSION_COOKIE_AGE = 60 * 60 * 8
+
+# Сесія закінчується при закритті браузера
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),

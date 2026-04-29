@@ -9,17 +9,6 @@ from .serializers import PageSerializer, ContactInfoSerializer
 
 
 class PageDetailView(generics.RetrieveAPIView):
-    """
-    GET /api/pages/<key>/
-    Повертає сторінку з усіма видимими секціями.
-    Next.js викликає цей endpoint при SSR для кожної сторінки.
-
-    Приклади:
-        GET /api/pages/home/
-        GET /api/pages/about/
-        GET /api/pages/contacts/
-    """
-
     serializer_class = PageSerializer
     lookup_field = "key"
 
@@ -34,18 +23,11 @@ class PageDetailView(generics.RetrieveAPIView):
         except Page.DoesNotExist:
             raise NotFound(f"Сторінку '{key}' не знайдено або вона неактивна.")
 
-        # Додаємо метод до об'єкта щоб серіалізатор міг отримати видимі секції
         page.get_visible_sections = lambda: page.sections.filter(is_visible=True).order_by("order")
         return page
 
 
 class ContactInfoView(APIView):
-    """
-    GET /api/contacts/
-    Повертає контактну інформацію організації.
-    Використовується в footer і на сторінці контактів.
-    """
-
     def get(self, request):
         try:
             info = ContactInfo.objects.first()

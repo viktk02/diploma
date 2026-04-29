@@ -11,7 +11,6 @@ from .serializers import LoginSerializer, UserMeSerializer, UserAdminSerializer
 
 
 def _get_tokens(user):
-    """Повертає пару access + refresh токенів для юзера."""
     refresh = RefreshToken.for_user(user)
     return {
         "access":  str(refresh.access_token),
@@ -20,11 +19,6 @@ def _get_tokens(user):
 
 
 class LoginView(APIView):
-    """
-    POST /api/auth/login/
-    Body: { "email": "...", "password": "..." }
-    Повертає JWT токени + дані юзера.
-    """
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -39,11 +33,6 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-    """
-    POST /api/auth/logout/
-    Body: { "refresh": "..." }
-    Інвалідує refresh-токен (додає в blacklist).
-    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -65,11 +54,6 @@ class LogoutView(APIView):
 
 
 class MeView(APIView):
-    """
-    GET /api/auth/me/
-    Повертає дані поточного авторизованого юзера.
-    Next.js викликає при завантаженні адмінки щоб знати роль.
-    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -77,11 +61,6 @@ class MeView(APIView):
 
 
 class TokenRefreshViewCustom(APIView):
-    """
-    POST /api/auth/refresh/
-    Body: { "refresh": "..." }
-    Повертає новий access токен. Refresh ротується.
-    """
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -95,7 +74,7 @@ class TokenRefreshViewCustom(APIView):
             token = RefreshToken(refresh_token)
             return Response({
                 "access":  str(token.access_token),
-                "refresh": str(token),  # ротований refresh
+                "refresh": str(token),
             })
         except TokenError:
             return Response(
@@ -103,26 +82,13 @@ class TokenRefreshViewCustom(APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-
-# --- Управління юзерами (тільки Root) ---
-
 class UserListCreateView(generics.ListCreateAPIView):
-    """
-    GET  /api/auth/users/     — список всіх юзерів (тільки Root)
-    POST /api/auth/users/     — створити нового редактора (тільки Root)
-    """
     queryset = User.objects.all().order_by("date_joined")
     serializer_class = UserAdminSerializer
     permission_classes = [IsRoot]
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    GET    /api/auth/users/<id>/  — деталі юзера
-    PATCH  /api/auth/users/<id>/  — оновити (роль, google_login_allowed, пароль)
-    DELETE /api/auth/users/<id>/  — видалити
-    Тільки Root.
-    """
     queryset = User.objects.all()
     serializer_class = UserAdminSerializer
     permission_classes = [IsRoot]

@@ -66,14 +66,12 @@ const ALL_FIELDS = [
 function toggleFields(inlineRow, selectedType) {
     const visibleFields = SECTION_FIELDS[selectedType] || ALL_FIELDS;
 
-    // Показуємо/ховаємо поля
     ALL_FIELDS.forEach(function(fieldClass) {
         const field = inlineRow.querySelector('.' + fieldClass);
         if (!field) return;
         field.style.display = visibleFields.includes(fieldClass) ? '' : 'none';
     });
 
-    // Карусель — тільки для gallery
     inlineRow.querySelectorAll('.inline-group').forEach(function(carouselBlock) {
         carouselBlock.style.display = selectedType === 'gallery' ? '' : 'none';
     });

@@ -84,7 +84,6 @@ class PageSection(models.Model):
 
 
 class SectionImage(models.Model):
-    """Фото для каруселі всередині секції."""
     section = models.ForeignKey(
         PageSection,
         on_delete=models.CASCADE,

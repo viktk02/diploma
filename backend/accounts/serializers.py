@@ -76,7 +76,6 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserMeSerializer(serializers.ModelSerializer):
-    """Повертається після логіну і в /api/auth/me/ — тільки безпечні поля."""
     class Meta:
         model  = User
         fields = ["id", "email", "name", "role"]
@@ -84,7 +83,6 @@ class UserMeSerializer(serializers.ModelSerializer):
 
 
 class UserAdminSerializer(serializers.ModelSerializer):
-    """Для Root: список і створення юзерів."""
     password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
@@ -102,8 +100,8 @@ class UserAdminSerializer(serializers.ModelSerializer):
         if password:
             user.set_password(password)
         else:
-            user.set_unusable_password()  # юзер зможе логінитись лише через Google
-        user.is_staff = True  # доступ до Django-адмінки
+            user.set_unusable_password()
+        user.is_staff = True
         user.save()
         return user
 
