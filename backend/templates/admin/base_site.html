@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+
+{% block usertools %}
+<div id="user-tools">
+  {% if user.is_authenticated %}
+    <a href="{% url 'accounts:profile' %}">👤 {{ user.name|default:user.email }}</a>
+    &nbsp;|&nbsp;
+    <form method="post" action="{% url 'admin:logout' %}" style="display:inline">
+      {% csrf_token %}
+      <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer; padding:0; font-size:inherit">
+        Вийти
+      </button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

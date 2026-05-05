@@ -1,94 +1,134 @@
-from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.exceptions import TokenError
+import io
+import base64
+import qrcode
 
-from .models import User
-from .permissions import IsRoot
-from .serializers import LoginSerializer, UserMeSerializer, UserAdminSerializer
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import logout
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django_otp.plugins.otp_totp.models import TOTPDevice
+
+from .forms import ProfileForm, ChangePasswordForm
 
 
-def _get_tokens(user):
-    refresh = RefreshToken.for_user(user)
-    return {
-        "access":  str(refresh.access_token),
-        "refresh": str(refresh),
+@staff_member_required
+def profile_view(request):
+    profile_form  = ProfileForm(instance=request.user)
+    password_form = ChangePasswordForm(user=request.user)
+
+    if request.method == "POST":
+        if "save_profile" in request.POST:
+            profile_form = ProfileForm(request.POST, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, "Профіль оновлено.")
+                return redirect("accounts:profile")
+
+        elif "change_password" in request.POST:
+            password_form = ChangePasswordForm(user=request.user, data=request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                messages.success(request, "Пароль змінено. Увійдіть знову.")
+                return redirect("admin:login")
+
+    totp_device = TOTPDevice.objects.filter(user=request.user, confirmed=True).first()
+
+    return render(request, "admin/profile.html", {
+        "title": "Мій профіль",
+        "profile_form": profile_form,
+        "password_form": password_form,
+        "totp_enabled": totp_device is not None,
+        "has_permission": True,
+    })
+
+
+def _render_2fa_setup(request, device, extra=None):
+    img = qrcode.make(device.config_url)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    qr_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+    ctx = {
+        "title": "Налаштування 2FA",
+        "qr_b64": qr_b64,
+        "secret_key": device.bin_key.hex(),
+        "has_permission": True,
     }
+    if extra:
+        ctx.update(extra)
+    return render(request, "admin/setup_2fa.html", ctx)
 
 
-class LoginView(APIView):
-    permission_classes = [AllowAny]
+@staff_member_required
+def setup_2fa_view(request):
+    if request.method == "POST":
+        code   = request.POST.get("code", "").strip()
+        device = TOTPDevice.objects.filter(user=request.user, confirmed=False).first()
 
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]
-        tokens = _get_tokens(user)
-        return Response({
-            **tokens,
-            "user": UserMeSerializer(user).data,
-        })
-
-
-class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        refresh_token = request.data.get("refresh")
-        if not refresh_token:
-            return Response(
-                {"detail": "refresh токен обов'язковий."},
-                status=status.HTTP_400_BAD_REQUEST,
+        if not device:
+            device = TOTPDevice.objects.create(
+                user=request.user,
+                name=f"{request.user.email} TOTP",
+                confirmed=False,
             )
-        try:
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-        except TokenError:
-            return Response(
-                {"detail": "Невалідний або вже використаний токен."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response({"detail": "Вихід виконано."}, status=status.HTTP_200_OK)
+            return _render_2fa_setup(request, device)
+
+        if device.verify_token(code):
+            device.confirmed = True
+            device.save()
+            messages.success(request, "2FA успішно налаштовано!")
+            return redirect("accounts:profile")
+
+        return _render_2fa_setup(request, device, {"error": "Невірний код. Спробуйте ще раз."})
+
+    TOTPDevice.objects.filter(user=request.user, confirmed=False).delete()
+    device = TOTPDevice.objects.create(
+        user=request.user,
+        name=f"{request.user.email} TOTP",
+        confirmed=False,
+    )
+    return _render_2fa_setup(request, device)
 
 
-class MeView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        return Response(UserMeSerializer(request.user).data)
-
-
-class TokenRefreshViewCustom(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        refresh_token = request.data.get("refresh")
-        if not refresh_token:
-            return Response(
-                {"detail": "refresh токен обов'язковий."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        try:
-            token = RefreshToken(refresh_token)
-            return Response({
-                "access":  str(token.access_token),
-                "refresh": str(token),
-            })
-        except TokenError:
-            return Response(
-                {"detail": "Невалідний або прострочений токен."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-class UserListCreateView(generics.ListCreateAPIView):
-    queryset = User.objects.all().order_by("date_joined")
-    serializer_class = UserAdminSerializer
-    permission_classes = [IsRoot]
+@staff_member_required
+def disable_2fa_view(request):
+    if request.method == "POST":
+        TOTPDevice.objects.filter(user=request.user).delete()
+        messages.success(request, "2FA вимкнено.")
+    return redirect("accounts:profile")
 
 
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserAdminSerializer
-    permission_classes = [IsRoot]
+def verify_2fa_view(request):
+    if not request.user.is_authenticated:
+        return redirect("admin:login")
+
+    if request.user.is_verified():
+        return redirect("admin:index")
+
+    has_device = TOTPDevice.objects.filter(
+        user=request.user, confirmed=True
+    ).exists()
+    if not has_device:
+        return redirect("admin:index")
+
+    error = None
+    if request.method == "POST":
+        code = request.POST.get("code", "").strip()
+        device = TOTPDevice.objects.filter(
+            user=request.user, confirmed=True
+        ).first()
+
+        if device and device.verify_token(code):
+            device.persistent_id
+            request.user.otp_device = device
+            from django_otp import login as otp_login
+            otp_login(request, device)
+            next_url = request.GET.get("next", "/admin/")
+            return redirect(next_url)
+
+        error = "Невірний код. Спробуйте ще раз."
+
+    return render(request, "admin/verify_2fa.html", {
+        "title": "Підтвердження входу",
+        "error": error,
+        "has_permission": False,
+    })

@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
     'rest_framework',
-    "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",  # для logout (blacklist refresh)
     "corsheaders",
     'django_ckeditor_5',
     'core',
@@ -56,13 +56,17 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = "accounts.User"
 
+OTP_ADMIN_AUTO_CREATE = False
+
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',     
+    'core.middleware.Require2FAMiddleware',                  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -79,21 +83,8 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Сесія закінчується через 8 годин (в секундах)
-SESSION_COOKIE_AGE = 60 * 60 * 8
-
-# Сесія закінчується при закритті браузера
+SESSION_COOKIE_AGE = 60 * 60 * 8            
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKENS":  True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-}
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -162,8 +153,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-#CKEditor Settings
 customColorPalette = [
         {
             'color': 'hsl(4, 90%, 58%)',
@@ -191,7 +180,6 @@ customColorPalette = [
         },
     ]
 
-# CKEDITOR_5_CUSTOM_CSS = 'path_to.css' # optional
 CKEDITOR_5_FILE_STORAGE = "core.ckeditor5_utils.CustomStorage"
 CKEDITOR_5_CONFIGS = {
     'default': {
@@ -260,5 +248,4 @@ CKEDITOR_5_CONFIGS = {
     }
 }
 
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"  # Possible values: "staff", "authenticated", "any"
-# CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "custom_upload_file"
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"

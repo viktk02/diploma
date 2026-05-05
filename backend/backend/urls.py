@@ -2,8 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from accounts.views import profile_view, setup_2fa_view, disable_2fa_view
 
 urlpatterns = [
+    path('admin/', include('accounts.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/v1/', include('reports.urls')),
