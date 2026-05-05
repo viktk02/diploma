@@ -1,5 +1,9 @@
+import time
+
 from django.shortcuts import redirect
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from django.contrib.auth import logout
+
 
 class Require2FAMiddleware:
     EXEMPT_URLS = (
@@ -30,4 +34,21 @@ class Require2FAMiddleware:
                     f'/admin/profile/2fa/verify/?next={request.path}'
                 )
 
+        return self.get_response(request)
+
+class SessionTimeoutMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+    
+    def __call__(self, request):
+        if request.user.is_authenticated:
+            last_activity = request.session.get('last_activity')
+            now = time.time()
+
+            if last_activity and (now - last_activity > 60 * 60 * 8):
+                logout(request)
+                return redirect('admin/login/?timeout=1')
+            
+            request.session['last_activity'] = now
+        
         return self.get_response(request)

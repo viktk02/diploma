@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     "corsheaders",
     'django_ckeditor_5',
+    'social_django',
     'core',
     'reports',
     'schedule',
@@ -54,9 +55,7 @@ INSTALLED_APPS = [
     'nested_admin'
 ]
 
-AUTH_USER_MODEL = "accounts.User"
 
-OTP_ADMIN_AUTO_CREATE = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,7 +65,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',     
-    'core.middleware.Require2FAMiddleware',                  
+    'core.middleware.Require2FAMiddleware',
+    'core.middleware.SessionTimeoutMiddleware',                  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -82,9 +82,6 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
     ],
 }
-
-SESSION_COOKIE_AGE = 60 * 60 * 8            
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -120,6 +117,52 @@ DATABASES = {
         'PORT': os.getenv('POSTGRES_PORT', default='5432'),
     }
 }
+
+AUTH_USER_MODEL = "accounts.User"
+
+OTP_ADMIN_AUTO_CREATE = False
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# SESSION_COOKIE_AGE = 60 * 60 * 8            
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_SAVE_EVERY_REQUEST = True
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['gmail.com', 'google.com'] # later change to 'mistosyly.org'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'openid',
+    'https://www.googleapis.com/auth/userinfo.email', 
+    'https://www.googleapis.com/auth/userinfo.profile'
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+    'hd': 'mistosyly.org',
+}
+
+SOCIAL_AUTH_PIPELINE = [
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'accounts.pipeline.require_allowlist',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'accounts.pipeline.set_staff_flag',
+]
+
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/admin/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/admin/login/?error=true'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_CREATE_USERS = False
 
 AUTH_PASSWORD_VALIDATORS = [
     {
