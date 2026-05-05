@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'django_ckeditor_5',
     'social_django',
+    'axes',
     'core',
     'reports',
     'schedule',
@@ -54,8 +55,6 @@ INSTALLED_APPS = [
     'pages',
     'nested_admin'
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +68,7 @@ MIDDLEWARE = [
     'core.middleware.SessionTimeoutMiddleware',                  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -123,13 +123,10 @@ AUTH_USER_MODEL = "accounts.User"
 OTP_ADMIN_AUTO_CREATE = False
 
 AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
-
-# SESSION_COOKIE_AGE = 60 * 60 * 8            
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-# SESSION_SAVE_EVERY_REQUEST = True
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
@@ -142,9 +139,9 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile'
 ]
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
-    'hd': 'mistosyly.org',
-}
+# SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+#     'hd': 'mistosyly.org',
+# }
 
 SOCIAL_AUTH_PIPELINE = [
     'social_core.pipeline.social_auth.social_details',
@@ -164,6 +161,27 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = '/admin/login/?error=true'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_CREATE_USERS = False
 
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_CALLABLE = None
+AXES_RESET_ON_SUCCESS = True
+AXES_ENABLE_ADMIN = True
+AXES_ONLY_ADMIN_SITE = True
+AXES_LOCKOUT_TEMPLATE = 'admin/lockout.html'
+AXES_LOCKOUT_PARAMETERS = ['username']
+
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -181,7 +199,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'uk-UA'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kyiv'
 
 USE_I18N = True
 

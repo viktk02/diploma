@@ -89,3 +89,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.is_editor:
             return app_label in self.EDITOR_APPS
         return False
+
+    def save(self, *args, **kwargs):
+        if self.role in (self.Role.ROOT, self.Role.EDITOR):
+            self.is_staff = True
+        if self.role == self.Role.ROOT:
+            self.is_superuser = True
+        super().save(*args, **kwargs)

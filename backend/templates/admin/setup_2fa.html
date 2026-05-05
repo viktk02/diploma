@@ -1,21 +1,108 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-<div style="max-width:500px">
+<style>
+  .setup-2fa-wrap {
+    max-width: 560px;
+    margin: 40px auto;
+  }
+
+  .setup-2fa-wrap .module {
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .setup-2fa-wrap h2 {
+    margin: 0 0 20px;
+  }
+
+  .setup-2fa-step {
+    margin: 0 0 14px;
+  }
+
+  .setup-2fa-qr {
+    margin: 18px 0;
+    text-align: center;
+  }
+
+  .setup-2fa-qr img {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    background: #fff;
+    padding: 10px;
+  }
+
+  .setup-2fa-note {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .setup-2fa-code {
+    font-size: 24px;
+    letter-spacing: 8px;
+    width: 220px;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .setup-2fa-actions {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .setup-2fa-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+
+  .setup-2fa-btn.primary {
+    background: #417690;
+    border-color: #417690;
+    color: #fff;
+  }
+
+  .setup-2fa-btn.primary:hover {
+    background: #2f5d74;
+    border-color: #2f5d74;
+  }
+
+  .setup-2fa-btn.secondary {
+    background: #fff;
+    border-color: #d0d7de;
+    color: #2b2f33;
+  }
+
+  .setup-2fa-btn.secondary:hover {
+    background: #f6f8fa;
+  }
+</style>
+<div class="setup-2fa-wrap">
 
   <h2>Налаштування 2FA</h2>
 
-  <div class="module" style="padding:20px; margin-bottom:20px">
-    <p>1. Відскануйте QR код у <strong>Google Authenticator</strong> або <strong>Authy</strong></p>
-    <div style="margin:20px 0">
-      <img src="data:image/png;base64,{{ qr_b64 }}" alt="QR код для 2FA" style="width:200px;height:200px">
+  <div class="module">
+    <p class="setup-2fa-step">1. Відскануйте QR-код у <strong>Google Authenticator</strong> або <strong>Authy</strong>.</p>
+    <div class="setup-2fa-qr">
+      <img src="data:image/png;base64,{{ qr_b64 }}" alt="QR код для 2FA">
     </div>
-    <p style="font-size:12px; color:#666">
+    <p class="setup-2fa-note">
       Або введіть ключ вручну: <code>{{ secret_key }}</code>
     </p>
   </div>
 
-  <div class="module" style="padding:20px">
-    <p>2. Введіть 6-значний код з додатку для підтвердження</p>
+  <div class="module">
+    <p class="setup-2fa-step">2. Введіть 6-значний код з додатку для підтвердження.</p>
     {% if error %}
       <p class="errornote">{{ error }}</p>
     {% endif %}
@@ -27,12 +114,11 @@
         maxlength="6"
         placeholder="000000"
         autofocus
-        class="vTextField"
-        style="font-size:24px; letter-spacing:8px; width:200px; text-align:center"
+        class="vTextField setup-2fa-code"
       >
-      <div style="margin-top:15px">
-        <button type="submit" class="default">Підтвердити</button>
-        <a href="{% url 'accounts:profile' %}" style="margin-left:10px">Скасувати</a>
+      <div class="setup-2fa-actions">
+        <button type="submit" class="setup-2fa-btn primary">Підтвердити</button>
+        <a href="{% url 'accounts:profile' %}" class="setup-2fa-btn secondary">Скасувати</a>
       </div>
     </form>
   </div>

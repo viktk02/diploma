@@ -1,0 +1,16 @@
+{% extends "admin/base_site.html" %}
+ 
+{% block content %}
+<div style="max-width:400px; margin:40px auto; text-align:center">
+  <div class="module" style="padding:30px">
+    <h2 style="color:#ba2121">⚠️ Забагато спроб входу</h2>
+    <p>Ваш акаунт тимчасово заблоковано через велику кількість невдалих спроб входу.</p>
+    <p style="color:#666; font-size:13px">Спробуйте знову через <strong>1 годину</strong> або зверніться до адміністратора.</p>
+    <div style="margin-top:20px">
+      <a href="/admin/" style="display:inline-block; padding:10px 18px; background:#417690; color:#fff; text-decoration:none; border-radius:4px; font-weight:600">
+        На головну
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

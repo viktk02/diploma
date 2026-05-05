@@ -1,9 +1,56 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-<div style="max-width:400px; margin:40px auto">
+<style>
+  .verify-2fa-wrap {
+    max-width: 420px;
+    margin: 40px auto;
+  }
 
-  <div class="module" style="padding:30px">
-    <h2 style="margin-top:0">Підтвердження входу</h2>
+  .verify-2fa-wrap .module {
+    padding: 24px;
+  }
+
+  .verify-2fa-wrap h2 {
+    margin-top: 0;
+  }
+
+  .verify-2fa-code {
+    font-size: 28px;
+    letter-spacing: 10px;
+    width: 100%;
+    text-align: center;
+    margin: 15px 0;
+    box-sizing: border-box;
+  }
+
+  .verify-2fa-actions {
+    margin-top: 15px;
+  }
+
+  .verify-2fa-btn {
+    display: inline-block;
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid #417690;
+    background: #417690;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+
+  .verify-2fa-btn:hover {
+    background: #2f5d74;
+    border-color: #2f5d74;
+  }
+</style>
+<div class="verify-2fa-wrap">
+
+  <div class="module">
+    <h2>Підтвердження входу</h2>
     <p>Введіть 6-значний код з Google Authenticator або Authy.</p>
 
     {% if error %}
@@ -18,11 +65,10 @@
         maxlength="6"
         placeholder="000000"
         autofocus
-        class="vTextField"
-        style="font-size:28px; letter-spacing:10px; width:100%; text-align:center; margin:15px 0"
+        class="vTextField verify-2fa-code"
       >
-      <div style="margin-top:15px">
-        <button type="submit" class="default" style="width:100%">
+      <div class="verify-2fa-actions">
+        <button type="submit" class="verify-2fa-btn">
           Підтвердити
         </button>
       </div>

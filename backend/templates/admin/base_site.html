@@ -1,5 +1,17 @@
 {% extends "admin/base.html" %}
 
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  #user-tools,
+  #user-tools a,
+  #user-tools button {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+</style>
+{% endblock %}
+
 {% block usertools %}
 <div id="user-tools">
   {% if user.is_authenticated %}

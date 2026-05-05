@@ -1,12 +1,12 @@
 'use strict';
 
 const SECTION_FIELDS = {
-    hero:     ['field-title', 'field-subtitle', 'field-image', 'field-image_alt', 'field-button_text', 'field-button_url'],
-    text:     ['field-title', 'field-subtitle', 'field-content', 'field-image', 'field-image_alt'],
-    gallery:  ['field-title', 'field-subtitle'],
+    hero: ['field-title', 'field-subtitle', 'field-image', 'field-image_alt', 'field-button_text', 'field-button_url'],
+    text: ['field-title', 'field-subtitle', 'field-content', 'field-image', 'field-image_alt'],
+    gallery: ['field-title', 'field-subtitle'],
     contacts: ['field-title', 'field-content'],
-    cta:      ['field-title', 'field-subtitle', 'field-content', 'field-button_text', 'field-button_url'],
-    custom:   ['field-title', 'field-extra_data'],
+    cta: ['field-title', 'field-subtitle', 'field-content', 'field-button_text', 'field-button_url'],
+    custom: ['field-title', 'field-extra_data'],
 };
 
 const ALL_FIELDS = [

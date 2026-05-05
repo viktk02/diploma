@@ -7,9 +7,9 @@ from core.admin_mixins import RootOnlyMixin
 @admin.register(User)
 class UserAdmin(RootOnlyMixin, BaseUserAdmin):
     list_display = ("email", "name", "role", "is_active", "google_login_allowed", "date_joined")
-    list_filter  = ("role", "is_active", "google_login_allowed")
+    list_filter = ("role", "is_active", "google_login_allowed")
     search_fields = ("email", "name")
-    ordering     = ("-date_joined",)
+    ordering = ("-date_joined",)
     readonly_fields = ("date_joined", "last_login", "google_sub")
 
     fieldsets = (
@@ -39,3 +39,6 @@ class UserAdmin(RootOnlyMixin, BaseUserAdmin):
             "fields": ("email", "name", "role", "password1", "password2", "is_staff"),
         }),
     )
+
+    class Media:
+        js = ('admin/js/user_admin.js',)
