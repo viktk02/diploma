@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'django_otp',
     'django_otp.plugins.otp_totp',
     'rest_framework',
@@ -53,7 +54,8 @@ INSTALLED_APPS = [
     'schedule',
     'accounts',
     'pages',
-    'nested_admin'
+    'nested_admin', 
+    'seo',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +75,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
@@ -81,6 +83,17 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '60/minute',
+        'user': '120/minute',
+        'search': '20/minute',
+        'burst': '10/second',
+        'sustained': '60/minute',
+    }
 }
 
 CORS_ALLOWED_ORIGINS = [
