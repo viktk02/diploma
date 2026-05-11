@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 from django.contrib.sitemaps.views import sitemap
 from seo.sitemaps import sitemaps
 from seo.views import RobotsView, RedirectMiddlewareView
@@ -25,6 +26,7 @@ urlpatterns = [
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path("nested_admin/", include("nested_admin.urls")),
 
+    path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
     path('<path:path>', RedirectMiddlewareView.as_view(), name='redirect'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

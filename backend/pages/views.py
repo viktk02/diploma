@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 
 from .models import Page, ContactInfo
-from .serializers import PageSerializer, ContactInfoSerializer
+from .serializers import PageSerializer, ContactInfoSerializer, PageNavSerializer
 
 
 class PageDetailView(generics.RetrieveAPIView):
@@ -37,3 +37,9 @@ class ContactInfoView(APIView):
             return Response(serializer.data)
         except ContactInfo.DoesNotExist:
             raise NotFound("Контактну інформацію ще не заповнено.")
+
+
+class AllPagesView(APIView):
+    def get(self, request):
+        pages = Page.objects.filter(is_active=True).order_by('key')
+        return Response(PageNavSerializer(pages, many=True).data)

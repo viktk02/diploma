@@ -65,3 +65,11 @@ class ContactInfoSerializer(serializers.ModelSerializer):
             "founding_year",
             "logo",
         ]
+
+class PageNavSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = [
+            'key',
+            'title',
+        ]
