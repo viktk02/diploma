@@ -36,6 +36,9 @@ db.sqlite3-journal
 
 media/
 
+# Локальні дампи з scripts/backup.sh (дефолтний BACKUP_DIR)
+backend/backups/
+
 staticfiles/
 
 .vscode/
