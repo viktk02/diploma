@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Alumni+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --teal:       #4e9980;
+  --teal-dark:  #3d7a65;
+  --teal-light: #6ab89e;
+  --charcoal:   #575656;
+  --charcoal-dark: #3a3939;
+  --red:        #AD2A08;
+  --red-light:  #c43510;
+  --white:      #ffffff;
+  --off-white:  #f7f7f5;
+  --light-gray: #efefed;
+  --border:     #e0e0dd;
+
+  --font-main: 'Alumni Sans', sans-serif;
+
+  --container: 1200px;
+  --section-py: 5rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-main);
+  font-weight: 400;
+  color: var(--charcoal);
+  background-color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-main);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--charcoal-dark);
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+h2 { font-size: clamp(2rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
+h4 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+
+p {
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+a {
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--teal-dark);
+}
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: var(--teal);
+  color: var(--white);
+  font-family: var(--font-main);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: var(--teal-dark);
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: transparent;
+  color: var(--teal);
+  font-family: var(--font-main);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 2px solid var(--teal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background: var(--teal);
+  color: var(--white);
+}
+
+.btn-red {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--font-main);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-red:hover {
+  background: var(--red-light);
+  color: var(--white);
+}
+
+.section {
+  padding: var(--section-py) 0;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--charcoal-dark);
+  position: relative;
+  margin-bottom: 3rem;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 4rem;
+  height: 4px;
+  background: var(--teal);
+  margin-top: 1rem;
+}
+
+.section-title.centered {
+  text-align: center;
+}
+
+.section-title.centered::after {
+  margin: 1rem auto 0;
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: 0 8px 32px rgba(78, 153, 128, 0.15);
+  transform: translateY(-2px);
+}
+
+.text-teal { color: var(--teal); }
+.text-red { color: var(--red); }
+.text-charcoal { color: var(--charcoal); }
+.bg-teal { background-color: var(--teal); }
+.bg-off-white { background-color: var(--off-white); }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
