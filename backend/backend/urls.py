@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
+
+admin.site.site_header = 'Місто Сили — адміністрування'
+admin.site.site_title = 'Місто Сили'
+admin.site.index_title = 'Панель керування'
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve
@@ -20,6 +24,7 @@ urlpatterns = [
     path('api/v1/', include('reports.urls')),
     path('api/v1/', include('schedule.urls')),
     path("api/v1/", include("pages.urls")),
+    path("api/v1/", include("seo.urls")),
 
     path("api/v1/search/", SearchView.as_view(), name="search"),
 

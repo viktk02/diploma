@@ -3,7 +3,11 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, ArrowLeft } from 'lucide-react';
+import { fetchLive } from '@/lib/api';
 import { fixMediaUrls } from '@/lib/utils';
+import { ContentWithLightbox } from '@/components/ContentWithLightbox';
+
+export const dynamic = 'force-dynamic';
 
 interface Report {
   id: number;
@@ -16,9 +20,7 @@ interface Report {
 
 async function getReport(slug: string): Promise<Report | null> {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/v1/reports/${slug}/`, {
-      next: { revalidate: 300 },
-    });
+    const res = await fetchLive(`/api/v1/reports/${slug}/`);
     if (!res.ok) return null;
     return res.json();
   } catch {
@@ -60,6 +62,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ s
           font-size: 1.125rem;
           line-height: 1.8;
           color: var(--charcoal);
+          width: 100%;
         }
         .report-content h1, .report-content h2, .report-content h3 {
           font-weight: 700;
@@ -74,33 +77,48 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ s
           margin-bottom: 1.25rem;
         }
         .report-content li { margin-bottom: 0.5rem; }
-        .report-content table {
+        .report-content figure.table {
+          margin: 1.5rem auto;
+          display: flex;
+          justify-content: center;
           width: 100%;
+        }
+        .report-content figure.table table {
           border-collapse: collapse;
-          margin-bottom: 1.5rem;
-          overflow-x: auto;
-          display: block;
+          width: auto;
         }
         .report-content td, .report-content th {
           border: 1px solid var(--border);
           padding: 0.75rem 1rem;
-          white-space: nowrap;
+          text-align: left;
         }
         .report-content th {
           background: var(--off-white);
           font-weight: 700;
         }
         .report-content a { color: var(--teal); text-decoration: underline; }
-        .report-content figure { margin: 2rem 0; text-align: center; }
+        .report-content figure {
+          margin: 2rem auto;
+          text-align: center;
+          display: block;
+          width: 100%;
+        }
+        .report-content figure img {
+          margin: 0 auto;
+          display: block;
+        }
         .report-content img {
           max-width: 100%;
           height: auto;
           margin: 1.5rem auto;
           display: block;
           box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+          cursor: zoom-in;
+          transition: opacity 0.2s;
         }
+        .report-content img:hover { opacity: 0.9; }
         .report-content figcaption {
-          font-size: 0.875rem;
+          font-size: 1rem;
           color: var(--charcoal);
           margin-top: 0.5rem;
           font-style: italic;
@@ -131,13 +149,19 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ s
           background: var(--off-white);
           font-style: italic;
         }
-
         @media (max-width: 640px) {
           .report-content .image-style-align-left,
           .report-content .image-style-align-right {
             float: none;
             max-width: 100%;
             margin: 1rem 0;
+          }
+          .report-content figure.table {
+            overflow-x: auto;
+            justify-content: flex-start;
+          }
+          .report-content figure.table table {
+            width: 100%;
           }
         }
       `}</style>
@@ -148,7 +172,9 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ s
             src={report.image}
             alt={report.title}
             fill
+            sizes="100vw"
             style={{ objectFit: 'cover', opacity: 0.85 }}
+            loading="eager"
             priority
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(30,30,30,0.8) 100%)' }} />
@@ -156,12 +182,12 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ s
             {report.date_published && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
                 <Calendar size={15} style={{ color: 'var(--teal-light)' }} />
-                <time dateTime={report.date_published} style={{ fontSize: '0.9rem', color: 'var(--teal-light)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                <time dateTime={report.date_published} style={{ fontSize: '1rem', color: 'var(--teal-light)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   {formatDate(report.date_published)}
                 </time>
               </div>
             )}
-            <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', fontWeight: 700, color: '#fff', lineHeight: 1.2, maxWidth: '800px' }}>
+            <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 3rem)', fontWeight: 700, color: '#fff', lineHeight: 1.2 }}>
               {report.title}
             </h1>
           </div>
@@ -174,7 +200,7 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ s
             {report.date_published && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
                 <Calendar size={15} style={{ color: 'var(--teal)' }} />
-                <time dateTime={report.date_published} style={{ fontSize: '0.9rem', color: 'var(--teal)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                <time dateTime={report.date_published} style={{ fontSize: '1rem', color: 'var(--teal)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                   {formatDate(report.date_published)}
                 </time>
               </div>
@@ -185,13 +211,13 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ s
           </header>
         )}
 
-        <div
-          style={{ maxWidth: '800px' }}
+        <ContentWithLightbox
+          html={fixMediaUrls(report.content)}
           className="report-content"
-          dangerouslySetInnerHTML={{ __html: fixMediaUrls(report.content) }}
+          style={{ width: '100%' }}
         />
 
-        <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border)', maxWidth: '800px' }}>
+        <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
           <Link href="/reports" className="btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
             <ArrowLeft size={16} />
             Усі звіти

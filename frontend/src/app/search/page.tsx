@@ -84,7 +84,7 @@ function TypeBadge({ type }: { type: string }) {
       display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
       padding: '0.2rem 0.625rem',
       background: c.color, color: '#fff',
-      fontSize: '0.75rem', fontWeight: 700,
+      fontSize: '1rem', fontWeight: 700,
       textTransform: 'uppercase', letterSpacing: '0.05em',
       flexShrink: 0,
     }}>
@@ -155,9 +155,9 @@ export default async function SearchPage({
                 <Link
                   key={f.value}
                   href={f.value ? `/search?q=${encodeURIComponent(q)}&type=${f.value}` : `/search?q=${encodeURIComponent(q)}`}
-                  style={{
+                    style={{
                     padding: '0.375rem 1rem',
-                    fontSize: '0.9rem',
+                    fontSize: '1rem',
                     fontWeight: 600,
                     fontFamily: 'var(--font-main)',
                     textDecoration: 'none',
@@ -190,7 +190,7 @@ export default async function SearchPage({
           </div>
         ) : (
           <>
-            <p style={{ fontSize: '0.95rem', color: 'var(--charcoal)', marginBottom: '1.5rem' }}>
+            <p style={{ fontSize: '1rem', color: 'var(--charcoal)', marginBottom: '1.5rem' }}>
               Знайдено <strong>{data.total}</strong> результат{data.total === 1 ? '' : data.total < 5 ? 'и' : 'ів'} за запитом «{q}»
             </p>
 
@@ -219,7 +219,7 @@ export default async function SearchPage({
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                           <TypeBadge type={result.type} />
                           {date && (
-                            <time style={{ fontSize: '0.85rem', color: 'var(--teal)', fontWeight: 500 }}>
+                            <time style={{ fontSize: '1rem', color: 'var(--teal)', fontWeight: 500 }}>
                               {date}
                             </time>
                           )}
@@ -230,11 +230,11 @@ export default async function SearchPage({
                           </Link>
                         </h2>
                         {preview && (
-                          <p style={{ fontSize: '0.95rem', color: 'var(--charcoal)', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', margin: 0 }}>
+                          <p style={{ fontSize: '1rem', color: 'var(--charcoal)', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', margin: 0 }}>
                             {preview}
                           </p>
                         )}
-                        <Link href={href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: 'var(--teal)', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 'auto' }}
+                        <Link href={href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: 'var(--teal)', fontSize: '1rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 'auto' }}
                               className="search-more">
                           Перейти <ArrowRight size={13} />
                         </Link>

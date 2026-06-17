@@ -49,13 +49,13 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'social_django',
     'axes',
-    'core',
-    'reports',
-    'schedule',
-    'accounts',
-    'pages',
-    'nested_admin', 
-    'seo',
+    'core.apps.CoreConfig',
+    'reports.apps.ReportsConfig',
+    'schedule.apps.ScheduleConfig',
+    'accounts.apps.AccountsConfig',
+    'pages.apps.PagesConfig',
+    'nested_admin',
+    'seo.apps.SeoConfig',
 ]
 
 MIDDLEWARE = [
@@ -183,6 +183,7 @@ AXES_ENABLE_ADMIN = True
 AXES_ONLY_ADMIN_SITE = True
 AXES_LOCKOUT_TEMPLATE = 'admin/lockout.html'
 AXES_LOCKOUT_PARAMETERS = ['username']
+AXES_USERNAME_FORM_FIELD = 'username'
 
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True

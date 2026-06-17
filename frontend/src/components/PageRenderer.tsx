@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { GallerySectionClient } from './GallerySection';
 import { ArrowRight } from 'lucide-react';
 import { fixMediaUrls } from '@/lib/utils';
 
@@ -45,7 +46,7 @@ function HeroSection({ section }: { section: Section }) {
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '700px' }}>
           {section.subtitle && (
-            <span style={{ display: 'inline-block', background: 'var(--teal)', color: '#fff', padding: '0.375rem 1rem', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.5rem' }}>
+            <span style={{ display: 'inline-block', background: 'var(--teal)', color: '#fff', padding: '0.375rem 1rem', fontSize: '1rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.5rem' }}>
               {section.subtitle}
             </span>
           )}
@@ -105,41 +106,6 @@ function TextSection({ section, isAboveFold = false }: { section: Section; isAbo
   );
 }
 
-function GallerySection({ section, isAboveFold = false }: { section: Section; isAboveFold?: boolean }) {
-  if (!section.images?.length) return null;
-  return (
-    <section className="section" style={{ background: 'var(--off-white)' }}>
-      <div className="container">
-        {section.title && <h2 className="section-title centered">{section.title}</h2>}
-        {section.subtitle && (
-          <p style={{ textAlign: 'center', fontSize: '1.125rem', color: 'var(--charcoal)', marginBottom: '2rem', marginTop: '-1.5rem' }}>
-            {section.subtitle}
-          </p>
-        )}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
-          {section.images.map((img, index) => (
-            <figure key={img.id} style={{ margin: 0, overflow: 'hidden', position: 'relative', aspectRatio: '4/3' }}>
-              <Image
-                src={fixMediaUrls(img.image)}
-                alt={img.alt || ''}
-                fill
-                style={{ objectFit: 'cover' }}
-                loading={isAboveFold && index === 0 ? 'eager' : 'lazy'}
-                priority={isAboveFold && index === 0}
-              />
-              {img.caption && (
-                <figcaption style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(30,30,30,0.7)', color: '#fff', padding: '0.5rem 0.75rem', fontSize: '0.875rem' }}>
-                  {img.caption}
-                </figcaption>
-              )}
-            </figure>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function CTASection({ section }: { section: Section }) {
   return (
     <section style={{ background: 'var(--teal)', padding: '5rem 0' }}>
@@ -191,7 +157,7 @@ export function renderSection(section: Section, index = 0) {
   switch (section.section_type) {
     case 'hero':     return <HeroSection     key={section.id} section={section} />;
     case 'text':     return <TextSection     key={section.id} section={section} isAboveFold={isAboveFold} />;
-    case 'gallery':  return <GallerySection  key={section.id} section={section} isAboveFold={isAboveFold} />;
+    case 'gallery':  return <GallerySectionClient key={section.id} images={section.images} title={section.title} subtitle={section.subtitle} />;
     case 'cta':      return <CTASection      key={section.id} section={section} />;
     case 'contacts': return <ContactsSection key={section.id} section={section} />;
     default:         return null;
@@ -230,10 +196,11 @@ export function PageRenderer({ sections }: { sections: Section[] }) {
           margin: 1.5rem auto;
           display: block;
           box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+          cursor: zoom-in;
         }
         .cms-content figure { margin: 2rem 0; text-align: center; }
         .cms-content figcaption {
-          font-size: 0.875rem;
+          font-size: 1rem;
           color: var(--charcoal);
           margin-top: 0.5rem;
           font-style: italic;

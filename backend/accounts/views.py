@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
+from .admin_context import admin_template_context
 from .forms import ProfileForm, ChangePasswordForm
 
 
@@ -33,13 +34,14 @@ def profile_view(request):
 
     totp_device = TOTPDevice.objects.filter(user=request.user, confirmed=True).first()
 
-    return render(request, "admin/profile.html", {
-        "title": "Мій профіль",
-        "profile_form": profile_form,
-        "password_form": password_form,
-        "totp_enabled": totp_device is not None,
-        "has_permission": True,
-    })
+    return render(request, "admin/profile.html", admin_template_context(
+        request,
+        title="Мій профіль",
+        profile_form=profile_form,
+        password_form=password_form,
+        totp_enabled=totp_device is not None,
+        has_permission=True,
+    ))
 
 
 def _render_2fa_setup(request, device, extra=None):
@@ -47,12 +49,13 @@ def _render_2fa_setup(request, device, extra=None):
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     qr_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
-    ctx = {
-        "title": "Налаштування 2FA",
-        "qr_b64": qr_b64,
-        "secret_key": device.bin_key.hex(),
-        "has_permission": True,
-    }
+    ctx = admin_template_context(
+        request,
+        title="Налаштування 2FA",
+        qr_b64=qr_b64,
+        secret_key=device.bin_key.hex(),
+        has_permission=True,
+    )
     if extra:
         ctx.update(extra)
     return render(request, "admin/setup_2fa.html", ctx)
@@ -127,8 +130,9 @@ def verify_2fa_view(request):
 
         error = "Невірний код. Спробуйте ще раз."
 
-    return render(request, "admin/verify_2fa.html", {
-        "title": "Підтвердження входу",
-        "error": error,
-        "has_permission": False,
-    })
+    return render(request, "admin/verify_2fa.html", admin_template_context(
+        request,
+        title="Підтвердження входу",
+        error=error,
+        has_permission=False,
+    ))

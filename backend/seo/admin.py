@@ -1,10 +1,10 @@
 from django.utils.safestring  import mark_safe
 from django.contrib import admin
-from core.admin_mixins import RootOnlyMixin
+from core.admin_mixins import RootOnlyMixin, ShortTitleMixin
 from .models import Redirect
 
 @admin.register(Redirect)
-class RedirectAdmin(RootOnlyMixin, admin.ModelAdmin):
+class RedirectAdmin(RootOnlyMixin, ShortTitleMixin, admin.ModelAdmin):
     list_display = ("from_path", "to_url", "status_code", "is_active", "created_at")
     list_filter = ("status_code", "is_active")
     search_fields = ("from_path", "to_url")

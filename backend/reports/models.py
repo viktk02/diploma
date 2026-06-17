@@ -32,6 +32,11 @@ class Report(models.Model):
         blank=True,
     )
 
+    class Meta:
+        verbose_name = 'Звіт'
+        verbose_name_plural = 'Звіти'
+        ordering = ['-date_published']
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.title) or "report"

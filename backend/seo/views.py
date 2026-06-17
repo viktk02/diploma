@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseRedirect, Http404
 from django.views import View
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Redirect
 
 class RobotsView(View):
@@ -34,3 +36,13 @@ class RedirectMiddlewareView(View):
             except Redirect.DoesNotExist:
                 continue
         raise Http404
+
+
+class RedirectListAPIView(APIView):
+    """Список активних редиректів для Next.js proxy."""
+
+    def get(self, request):
+        rows = Redirect.objects.filter(is_active=True).values(
+            "from_path", "to_url", "status_code"
+        )
+        return Response(list(rows))

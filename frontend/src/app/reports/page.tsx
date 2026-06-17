@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { fetchLive } from '@/lib/api';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Звіти',
@@ -19,9 +22,7 @@ interface Report {
 
 async function getReports(): Promise<Report[]> {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/v1/reports/`, {
-      next: { revalidate: 300 },
-    });
+    const res = await fetchLive('/api/v1/reports/');
     if (!res.ok) return [];
     return res.json();
   } catch {
@@ -37,7 +38,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-const CARD_HEIGHT = 220;
+const CARD_HEIGHT = 280;
 
 export default async function ReportsPage() {
   const reports = await getReports();
@@ -62,28 +63,29 @@ export default async function ReportsPage() {
             {reports.map((report, index) => (
               <li key={report.id}>
                 <article
-                  className="card"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: report.image ? '280px 1fr' : '1fr',
-                    height: `${CARD_HEIGHT}px`,
-                    overflow: 'hidden',
-                  }}
-                >
+                    className="card report-card"
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: report.image ? '280px 1fr' : '1fr',
+                      minHeight: `${CARD_HEIGHT}px`,
+                      overflow: 'hidden',
+                    }}
+                  >
                   {report.image && (
                     <Link
                       href={`/reports/${report.slug}`}
                       tabIndex={-1}
                       aria-hidden="true"
-                      style={{ display: 'block', overflow: 'hidden', height: `${CARD_HEIGHT}px`, flexShrink: 0 }}
+                      className="report-photo-link"
+                      style={{ display: 'block', position: 'relative', overflow: 'hidden', minHeight: `${CARD_HEIGHT}px`, height: '100%', flexShrink: 0 }}
                     >
                       <Image
                         src={report.image}
                         alt={report.title}
-                        width={280}
-                        height={CARD_HEIGHT}
+                        fill
                         priority={index === 0}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
+                        sizes="280px"
+                        style={{ objectFit: 'cover', transition: 'transform 0.4s ease' }}
                         className="report-img"
                       />
                     </Link>
@@ -93,7 +95,8 @@ export default async function ReportsPage() {
                     padding: '1.5rem 2rem',
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'space-between',
+                    justifyContent: 'flex-start',
+                    gap: '0.9rem',
                     overflow: 'hidden',
                     minWidth: 0,
                   }}>
@@ -103,7 +106,7 @@ export default async function ReportsPage() {
                           <Calendar size={14} style={{ color: 'var(--teal)', flexShrink: 0 }} />
                           <time
                             dateTime={report.date_published}
-                            style={{ fontSize: '0.85rem', color: 'var(--teal)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                            style={{ fontSize: '1rem', color: 'var(--teal)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}
                           >
                             {formatDate(report.date_published)}
                           </time>
@@ -129,8 +132,8 @@ export default async function ReportsPage() {
                         </Link>
                       </h2>
 
-                      <p style={{
-                        fontSize: '0.95rem',
+                        <p style={{
+                        fontSize: '1rem',
                         color: 'var(--charcoal)',
                         lineHeight: 1.6,
                         display: '-webkit-box',
@@ -142,11 +145,11 @@ export default async function ReportsPage() {
                       </p>
                     </div>
 
-                    <div>
+                    <div style={{ marginTop: 'auto' }}>
                       <Link
                         href={`/reports/${report.slug}`}
                         className="btn-outline"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', padding: '0.5rem 1.125rem' }}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem', padding: '0.5rem 1.125rem' }}
                       >
                         Читати далі
                         <ArrowRight size={15} />
@@ -165,11 +168,13 @@ export default async function ReportsPage() {
         .report-title-link:hover { color: var(--teal) !important; }
 
         @media (max-width: 640px) {
-          article[style*="grid-template-columns"] {
+          .report-card {
             grid-template-columns: 1fr !important;
+            min-height: auto !important;
             height: auto !important;
           }
-          article[style*="grid-template-columns"] a[style*="height"] {
+          .report-photo-link {
+            min-height: 180px !important;
             height: 180px !important;
           }
         }

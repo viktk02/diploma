@@ -5,13 +5,8 @@ from .models import Report
 from .serializers import ReportListSerializer, ReportDetailSerializer
 
 class ReportViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Report.objects.filter(status=Report.Status.PUBLISHED)
+    queryset = Report.objects.filter(status=Report.Status.PUBLISHED).order_by('-date_published')
     serializer_class = ReportListSerializer
-
-    def get_queryset(self):
-        if self.queryset.count() == 0:
-            raise Http404("Reports not found")
-        return super().get_queryset()
 
 class ReportDetailView(generics.RetrieveAPIView):
     queryset = Report.objects.filter(status=Report.Status.PUBLISHED)

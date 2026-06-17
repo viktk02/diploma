@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, MapPin, ArrowLeft, Clock } from 'lucide-react';
+import { fetchLive } from '@/lib/api';
+
+export const dynamic = 'force-dynamic';
 
 interface Event {
   id: number;
@@ -16,9 +19,7 @@ interface Event {
 
 async function getEvent(slug: string): Promise<Event | null> {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/v1/events/${slug}/`, {
-      next: { revalidate: 300 },
-    });
+    const res = await fetchLive(`/api/v1/events/${slug}/`);
     if (!res.ok) return null;
     return res.json();
   } catch {
@@ -73,6 +74,41 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           padding: 2rem;
           border-left: 4px solid var(--teal);
         }
+        
+        /* Покращене вирівнювання для деталей події */
+        .event-detail-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+        .event-detail-item .icon-wrapper {
+          flex-shrink: 0;
+          width: 20px;
+          padding-top: 0.15rem;
+        }
+        .event-detail-item .detail-content {
+          display: flex;
+          flex-direction: column;
+          gap: 0.1rem;
+          flex: 1;
+          min-width: 0;
+        }
+        .event-detail-item .detail-label {
+          font-size: 0.7rem;
+          font-weight: 700;
+          color: var(--charcoal);
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          line-height: 1.2;
+        }
+        .event-detail-item .detail-value {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--charcoal-dark);
+          line-height: 1.3;
+          word-break: break-word;
+        }
+        
         @media (max-width: 768px) {
           .event-grid {
             grid-template-columns: 1fr;
@@ -109,7 +145,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             padding: '0.25rem 0.875rem',
             background: date.isPast ? 'var(--charcoal)' : 'var(--teal)',
             color: '#fff',
-            fontSize: '0.8rem',
+            fontSize: '1rem',
             fontWeight: 700,
             textTransform: 'uppercase',
             letterSpacing: '0.1em',
@@ -137,31 +173,37 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             </div>
           </div>
 
-          <aside className="event-aside">
+          <aside className="event-aside event-aside--mobile-center">
             <h2 style={{ fontSize: '1rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)', marginBottom: '1.5rem' }}>
               Деталі події
             </h2>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.875rem' }}>
-                <Calendar size={20} style={{ color: 'var(--teal)', marginTop: '2px', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Дата</div>
-                  <time dateTime={event.date} style={{ fontWeight: 700, color: 'var(--charcoal-dark)' }}>{date.full}</time>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.25rem', margin: 0, padding: 0 }}>
+              <li className="event-detail-item">
+                <div className="icon-wrapper">
+                  <Calendar size={18} style={{ color: 'var(--teal)' }} />
+                </div>
+                <div className="detail-content">
+                  <span className="detail-label">Дата</span>
+                  <time dateTime={event.date} className="detail-value">{date.full}</time>
                 </div>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.875rem' }}>
-                <Clock size={20} style={{ color: 'var(--teal)', marginTop: '2px', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Час</div>
-                  <span style={{ fontWeight: 700, color: 'var(--charcoal-dark)' }}>{date.time}</span>
+              <li className="event-detail-item">
+                <div className="icon-wrapper">
+                  <Clock size={18} style={{ color: 'var(--teal)' }} />
+                </div>
+                <div className="detail-content">
+                  <span className="detail-label">Час</span>
+                  <span className="detail-value">{date.time}</span>
                 </div>
               </li>
               {event.location && (
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.875rem' }}>
-                  <MapPin size={20} style={{ color: 'var(--teal)', marginTop: '2px', flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Місце</div>
-                    <span style={{ fontWeight: 700, color: 'var(--charcoal-dark)' }}>{event.location}</span>
+                <li className="event-detail-item">
+                  <div className="icon-wrapper">
+                    <MapPin size={18} style={{ color: 'var(--teal)' }} />
+                  </div>
+                  <div className="detail-content">
+                    <span className="detail-label">Місце</span>
+                    <span className="detail-value">{event.location}</span>
                   </div>
                 </li>
               )}

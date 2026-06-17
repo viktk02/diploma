@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from .models import Report
 from django_ckeditor_5.widgets import CKEditor5Widget
-from core.admin_mixins import EditorAccessMixin
+from core.admin_mixins import EditorAccessMixin, ShortTitleMixin
 
 class ContentAdminForm(forms.ModelForm):
     class Meta:
@@ -13,7 +13,7 @@ class ContentAdminForm(forms.ModelForm):
         }
 
 @admin.register(Report)
-class ReportAdmin(EditorAccessMixin, admin.ModelAdmin):
+class ReportAdmin(EditorAccessMixin, ShortTitleMixin, admin.ModelAdmin):
     form = ContentAdminForm
     readonly_fields = ('slug',)
     list_display = ('title', 'status','date_created','date_edited','date_published')

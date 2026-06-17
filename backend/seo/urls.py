@@ -1,4 +1,7 @@
-from django.urls import path 
-from .views import RobotsView
+from django.urls import path
 
-urlpatterns = []
+from .views import RedirectListAPIView
+
+urlpatterns = [
+    path("redirects/", RedirectListAPIView.as_view(), name="redirects-list"),
+]

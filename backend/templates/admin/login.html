@@ -1,6 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
-
+{% block sidebar %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
 {% block content %}
 <style>
   .custom-login-form .form-row {
@@ -57,8 +58,8 @@
       {{ form.password }}
     </div>
     <input type="hidden" name="next" value="{{ next }}">
-    <div class="submit-row">
-      <input value="Увійти" type="submit">
+    <div class="submit-row" style="text-align:center;">
+      <input value="Увійти" type="submit" style="width:100%;">
     </div>
   </form>
 

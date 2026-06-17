@@ -75,22 +75,52 @@ export default async function ContactsPage() {
           </p>
         </header>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
-          <div>
+        <div className="contacts-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+          <div className="contacts-info">
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '2rem', color: 'var(--charcoal-dark)' }}>
               {contacts?.organization_name || 'Місто Сили'}
             </h2>
 
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            <ul style={{ 
+              listStyle: 'none', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '1.5rem', 
+              marginBottom: '2.5rem',
+              padding: 0,
+            }}>
               {contacts?.email && (
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ width: '44px', height: '44px', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Mail size={20} color="#fff" />
+                  <div style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    background: 'var(--teal)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    flexShrink: 0,
+                    // borderRadius: '4px',
+                    marginTop: '0.1rem',
+                  }}>
+                    <Mail size={18} color="#fff" />
                   </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.25rem' }}>Email</div>
-                    <a href={`mailto:${contacts.email}`} style={{ fontSize: '1.125rem', fontWeight: 500, color: 'var(--charcoal-dark)', textDecoration: 'none' }}
-                       className="contact-link">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', flex: 1, minWidth: 0 }}>
+                    <span style={{ 
+                      fontSize: '0.7rem', 
+                      fontWeight: 700, 
+                      color: 'var(--charcoal)', 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.08em',
+                      lineHeight: 1.2,
+                    }}>Email</span>
+                    <a href={`mailto:${contacts.email}`} style={{ 
+                      fontSize: '1rem', 
+                      fontWeight: 500, 
+                      color: 'var(--charcoal-dark)', 
+                      textDecoration: 'none',
+                      lineHeight: 1.3,
+                      wordBreak: 'break-all',
+                    }} className="contact-link">
                       {contacts.email}
                     </a>
                   </div>
@@ -99,13 +129,35 @@ export default async function ContactsPage() {
 
               {contacts?.phone && (
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ width: '44px', height: '44px', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Phone size={20} color="#fff" />
+                  <div style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    background: 'var(--teal)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    flexShrink: 0,
+                    // borderRadius: '4px',
+                    marginTop: '0.1rem',
+                  }}>
+                    <Phone size={18} color="#fff" />
                   </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.25rem' }}>Телефон</div>
-                    <a href={`tel:${contacts.phone}`} style={{ fontSize: '1.125rem', fontWeight: 500, color: 'var(--charcoal-dark)', textDecoration: 'none' }}
-                       className="contact-link">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', flex: 1, minWidth: 0 }}>
+                    <span style={{ 
+                      fontSize: '0.7rem', 
+                      fontWeight: 700, 
+                      color: 'var(--charcoal)', 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.08em',
+                      lineHeight: 1.2,
+                    }}>Телефон</span>
+                    <a href={`tel:${contacts.phone}`} style={{ 
+                      fontSize: '1rem', 
+                      fontWeight: 500, 
+                      color: 'var(--charcoal-dark)', 
+                      textDecoration: 'none',
+                      lineHeight: 1.3,
+                    }} className="contact-link">
                       {contacts.phone}
                     </a>
                   </div>
@@ -114,12 +166,34 @@ export default async function ContactsPage() {
 
               {contacts?.address && (
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ width: '44px', height: '44px', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <MapPin size={20} color="#fff" />
+                  <div style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    background: 'var(--teal)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    flexShrink: 0,
+                    // borderRadius: '4px',
+                    marginTop: '0.1rem',
+                  }}>
+                    <MapPin size={18} color="#fff" />
                   </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.25rem' }}>Адреса</div>
-                    <span style={{ fontSize: '1.125rem', fontWeight: 500, color: 'var(--charcoal-dark)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', flex: 1, minWidth: 0 }}>
+                    <span style={{ 
+                      fontSize: '0.7rem', 
+                      fontWeight: 700, 
+                      color: 'var(--charcoal)', 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.08em',
+                      lineHeight: 1.2,
+                    }}>Адреса</span>
+                    <span style={{ 
+                      fontSize: '1rem', 
+                      fontWeight: 500, 
+                      color: 'var(--charcoal-dark)', 
+                      lineHeight: 1.3,
+                    }}>
                       {contacts.address}
                     </span>
                   </div>
@@ -142,18 +216,19 @@ export default async function ContactsPage() {
                       aria-label={label}
                       className="social-btn"
                       style={{
-                        display: 'flex',
+                        display: 'inline-flex',
                         alignItems: 'center',
                         gap: '0.5rem',
                         padding: '0.625rem 1rem',
                         border: '2px solid var(--teal)',
                         color: 'var(--teal)',
                         textDecoration: 'none',
-                        fontSize: '0.9rem',
+                        fontSize: '0.875rem',
                         fontWeight: 700,
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em',
                         transition: 'all 0.2s',
+                        // borderRadius: '4px',
                       }}
                     >
                       <Icon />
@@ -165,7 +240,7 @@ export default async function ContactsPage() {
             )}
           </div>
 
-          <div style={{
+          <div className="contacts-aside" style={{
             background: 'var(--off-white)',
             padding: '3rem',
             borderLeft: '4px solid var(--teal)',
@@ -180,7 +255,7 @@ export default async function ContactsPage() {
               height: '120px',
               background: 'var(--teal)',
               opacity: 0.08,
-              borderRadius: '50%',
+              // borderRadius: '50%',
             }} />
             <div style={{
               position: 'absolute',
@@ -190,7 +265,7 @@ export default async function ContactsPage() {
               height: '180px',
               background: 'var(--red)',
               opacity: 0.05,
-              borderRadius: '50%',
+              // borderRadius: '50%',
             }} />
 
             <h3 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--charcoal-dark)', marginBottom: '1rem', position: 'relative' }}>
@@ -202,7 +277,7 @@ export default async function ContactsPage() {
 
             {contacts?.founding_year && (
               <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.5rem', position: 'relative' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <span style={{ fontSize: '1rem', color: 'var(--charcoal)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Організація заснована у {contacts.founding_year} році
                 </span>
               </div>
@@ -218,9 +293,14 @@ export default async function ContactsPage() {
           color: #fff !important;
         }
         @media (max-width: 768px) {
-          div[style*="grid-template-columns: 1fr 1fr"] {
+          .contacts-grid {
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
+          }
+          .contacts-aside {
+            padding: 2rem 1.5rem;
+            border-left: none;
+            border-top: 4px solid var(--teal);
           }
         }
       `}</style>

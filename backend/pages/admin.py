@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-from core.admin_mixins import EditorAccessMixin
+from core.admin_mixins import EditorAccessMixin, ShortTitleMixin
 from .models import Page, PageSection, SectionImage, ContactInfo
 
 
@@ -49,7 +49,7 @@ class PageSectionInline(nested_admin.NestedStackedInline):
 
 
 @admin.register(Page)
-class PageAdmin(EditorAccessMixin, nested_admin.NestedModelAdmin):
+class PageAdmin(EditorAccessMixin, ShortTitleMixin, nested_admin.NestedModelAdmin):
     inlines       = [PageSectionInline]
     list_display  = ("title", "key", "is_active", "sections_count", "updated_at")
     list_filter   = ("is_active",)
@@ -79,7 +79,7 @@ class PageAdmin(EditorAccessMixin, nested_admin.NestedModelAdmin):
 
 
 @admin.register(ContactInfo)
-class ContactInfoAdmin(EditorAccessMixin, admin.ModelAdmin):
+class ContactInfoAdmin(EditorAccessMixin, ShortTitleMixin, admin.ModelAdmin):
     fieldsets = (
         ("Основне", {
             "fields": ("organization_name", "logo", "email", "phone", "address"),

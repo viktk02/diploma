@@ -5,13 +5,8 @@ from .models import Event
 from .serializers import EventListSerializer, EventDetailSerializer
 
 class EventViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Event.objects.filter(status=Event.Status.PUBLISHED)
+    queryset = Event.objects.filter(status=Event.Status.PUBLISHED).order_by('-date')
     serializer_class = EventListSerializer
-
-    def get_queryset(self):
-        if self.queryset.count() == 0:
-            raise Http404("Events not found")
-        return super().get_queryset()
 
 class EventDetailView(generics.RetrieveAPIView):
     queryset = Event.objects.filter(status=Event.Status.PUBLISHED)

@@ -77,6 +77,14 @@ function formatDate(dateStr: string) {
   });
 }
 
+function formatDateParts(dateStr: string) {
+  const date = new Date(dateStr);
+  return {
+    day: date.toLocaleDateString('uk-UA', { day: 'numeric' }),
+    month: date.toLocaleDateString('uk-UA', { month: 'long' }),
+  };
+}
+
 export default async function HomePage() {
   const [page, reports, events] = await Promise.all([
     getPage('home'),
@@ -89,34 +97,36 @@ export default async function HomePage() {
       <style>{`
         .home-link:hover { color: var(--teal) !important; }
 
+        /* Звіти — десктоп: горизонтальні */
         .home-report-card {
           display: grid;
-          grid-template-columns: 180px 1fr;
-          height: 140px;
+          grid-template-columns: 280px 1fr;
+          height: 220px;
           overflow: hidden;
         }
         .home-report-card.no-image {
           grid-template-columns: 1fr;
           height: auto;
-          min-height: 100px;
+          min-height: 120px;
         }
-        .home-report-img {
-          position: relative;
-          height: 140px;
+        .home-report-photo {
+          display: block;
           overflow: hidden;
+          height: 220px;
           flex-shrink: 0;
+          position: relative;
         }
+        .home-report-photo img { transition: transform 0.4s ease; }
+        .home-report-photo:hover img { transform: scale(1.04); }
 
+        /* Звіти — мобільний: вертикальні */
         @media (max-width: 640px) {
           .home-report-card {
-            grid-template-columns: 110px 1fr;
-            height: 120px;
+            grid-template-columns: 1fr !important;
+            height: auto !important;
           }
-          .home-report-img {
-            height: 120px;
-          }
-          .home-report-card .report-padding {
-            padding: 0.75rem 1rem !important;
+          .home-report-photo {
+            height: 220px !important;
           }
         }
       `}</style>
@@ -145,6 +155,7 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Останні звіти */}
       {reports.length > 0 && (
         <section className="section" style={{ background: 'var(--off-white)' }}>
           <div className="container">
@@ -154,42 +165,40 @@ export default async function HomePage() {
                 Всі звіти <ArrowRight size={16} />
               </Link>
             </div>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               {reports.map((report, index) => (
                 <li key={report.id}>
                   <article className={`card home-report-card${!report.image ? ' no-image' : ''}`}>
                     {report.image && (
                       <Link href={`/reports/${report.slug}`} tabIndex={-1} aria-hidden="true"
-                            className="home-report-img" style={{ display: 'block' }}>
+                            className="home-report-photo">
                         <Image
                           src={report.image}
                           alt={report.title}
                           fill
-                          sizes="180px"
+                          sizes="(max-width: 640px) 100vw, 280px"
                           priority={index === 0}
                           style={{ objectFit: 'cover' }}
                         />
                       </Link>
                     )}
-                    <div className="report-padding" style={{ padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden', minWidth: 0 }}>
-                      <div>
-                        {report.date_published && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
-                            <Calendar size={13} style={{ color: 'var(--teal)', flexShrink: 0 }} />
-                            <time style={{ fontSize: '0.8rem', color: 'var(--teal)', fontWeight: 500 }}>
-                              {formatDate(report.date_published)}
-                            </time>
-                          </div>
-                        )}
-                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.375rem', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                          <Link href={`/reports/${report.slug}`} style={{ color: 'var(--charcoal-dark)', textDecoration: 'none' }} className="home-link">
-                            {report.title}
-                          </Link>
-                        </h3>
-                        <p style={{ fontSize: '0.875rem', color: 'var(--charcoal)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                          {report.preview}
-                        </p>
-                      </div>
+                    <div style={{ padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', minWidth: 0 }}>
+                      {report.date_published && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                          <Calendar size={14} style={{ color: 'var(--teal)', flexShrink: 0 }} />
+                          <time style={{ fontSize: '1rem', color: 'var(--teal)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            {formatDate(report.date_published)}
+                          </time>
+                        </div>
+                      )}
+                      <h3 style={{ fontSize: 'clamp(1.125rem, 2vw, 1.5rem)', fontWeight: 700, lineHeight: 1.3, marginBottom: '0.625rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        <Link href={`/reports/${report.slug}`} style={{ color: 'var(--charcoal-dark)', textDecoration: 'none' }} className="home-link">
+                          {report.title}
+                        </Link>
+                      </h3>
+                      <p style={{ fontSize: '1rem', color: 'var(--charcoal)', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {report.preview}
+                      </p>
                     </div>
                   </article>
                 </li>
@@ -199,6 +208,7 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Найближчі події */}
       {events.length > 0 && (
         <section className="section">
           <div className="container">
@@ -208,39 +218,48 @@ export default async function HomePage() {
                 Всі події <ArrowRight size={16} />
               </Link>
             </div>
-            <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-              {events.map((event, index) => (
-                <li key={event.id}>
-                  <article className="card" style={{ overflow: 'hidden' }}>
-                    {event.image && (
+            <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', alignItems: 'stretch' }}>
+              {events.map((event, index) => {
+                const dateParts = formatDateParts(event.date);
+                return (
+                  <li key={event.id} style={{ display: 'flex' }}>
+                    <article className="card" style={{ display: 'flex', flexDirection: 'column', width: '100%', overflow: 'hidden' }}>
                       <Link href={`/events/${event.slug}`} tabIndex={-1} aria-hidden="true"
-                            style={{ display: 'block', position: 'relative', height: '160px', overflow: 'hidden' }}>
-                        <Image
-                          src={event.image}
-                          alt={event.title}
-                          fill
-                          sizes="(max-width: 640px) 100vw, 320px"
-                          priority={index === 0}
-                          style={{ objectFit: 'cover' }}
-                        />
+                            style={{ display: 'block', position: 'relative', flexShrink: 0, height: 200, overflow: 'hidden', background: 'var(--light-gray)' }}>
+                        {event.image ? (
+                          <Image
+                            src={event.image}
+                            alt={event.title}
+                            fill
+                            sizes="(max-width: 640px) 100vw, 320px"
+                            priority={index === 0}
+                            style={{ objectFit: 'cover', objectPosition: 'center' }}
+                          />
+                        ) : (
+                          <div style={{ width: '100%', height: '100%', background: 'var(--off-white)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Calendar size={48} style={{ color: 'var(--border)' }} />
+                          </div>
+                        )}
+                        <div style={{
+                          position: 'absolute', top: '1rem', left: '1rem',
+                          background: 'var(--teal)', color: '#fff',
+                          padding: '0.5rem 0.75rem', textAlign: 'center', minWidth: '52px',
+                        }}>
+                          <div style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1 }}>{dateParts.day}</div>
+                          <div style={{ fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{dateParts.month.slice(0, 3)}</div>
+                        </div>
                       </Link>
-                    )}
-                    <div style={{ padding: '1.25rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                        <Calendar size={13} style={{ color: 'var(--teal)' }} />
-                        <time style={{ fontSize: '0.85rem', color: 'var(--teal)', fontWeight: 500 }}>
-                          {formatDate(event.date)}
-                        </time>
+                      <div style={{ padding: '1.25rem', flex: 1 }}>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                          <Link href={`/events/${event.slug}`} style={{ color: 'var(--charcoal-dark)', textDecoration: 'none' }} className="home-link">
+                            {event.title}
+                          </Link>
+                        </h3>
                       </div>
-                      <h3 style={{ fontSize: '1.125rem', fontWeight: 700 }}>
-                        <Link href={`/events/${event.slug}`} style={{ color: 'var(--charcoal-dark)', textDecoration: 'none' }} className="home-link">
-                          {event.title}
-                        </Link>
-                      </h3>
-                    </div>
-                  </article>
-                </li>
-              ))}
+                    </article>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </section>

@@ -26,12 +26,23 @@ async function getContacts(): Promise<ContactInfo | null> {
   }
 }
 
+const PARTNER_LOGO_HEIGHT = 52;
+
+const PARTNER_LOGOS = [
+  { src: '/images/de_logo.png',      alt: 'Співпраця з Німеччиною' },
+  { src: '/images/eu_logo.png',      alt: 'Співфінансується Європейським Союзом' },
+  { src: '/images/giz_logo.png',     alt: 'GIZ — Deutsche Gesellschaft für Internationale Zusammenarbeit' },
+  { src: '/images/empower_logo.png', alt: 'Empower' },
+];
+
 export default async function Footer() {
   const contacts = await getContacts();
 
   return (
     <footer style={{ background: 'var(--charcoal-dark)', color: 'var(--white)', paddingTop: '4rem', paddingBottom: '2rem', marginTop: 'auto' }}>
       <div className="container">
+
+        {/* Основна сітка */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '3rem', paddingBottom: '3rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
 
           <div>
@@ -93,15 +104,87 @@ export default async function Footer() {
           </address>
         </div>
 
+        {/* Логотипи партнерів */}
+        <div style={{
+          paddingTop: '2rem',
+          paddingBottom: '2rem',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+        }}
+          className="footer-partner-logos"
+        >
+          {PARTNER_LOGOS.map(logo => (
+            <div key={logo.src} className="footer-partner-logo-item">
+              <Image
+                src={logo.src}
+                alt={logo.alt}
+                fill
+                sizes="(max-width: 640px) 45vw, 180px"
+                style={{ objectFit: 'contain', opacity: 0.85 }}
+              />
+            </div>
+          ))}
+          <div className="footer-partner-logo-item footer-partner-logo-item--last">
+            <Image
+              src="/images/logo.png"
+              alt="Місто Сили"
+              fill
+              sizes="(max-width: 640px) 45vw, 180px"
+              style={{ objectFit: 'contain', opacity: 0.85 }}
+            />
+          </div>
+        </div>
+
+        {/* Копірайт */}
         <div style={{ paddingTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)' }}>
+          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.4)' }}>
             © {new Date().getFullYear()} {contacts?.organization_name || 'Місто Сили'}. Всі права захищено.
           </p>
-          <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)' }}>
+          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.4)' }}>
             Громадська організація
           </p>
         </div>
       </div>
+
+      <style>{`
+        .footer-partner-logos {
+          --partner-logo-h: ${PARTNER_LOGO_HEIGHT}px;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: 2rem;
+        }
+
+        .footer-partner-logo-item {
+          position: relative;
+          height: var(--partner-logo-h);
+          width: 180px;
+          max-width: 100%;
+          flex-shrink: 0;
+        }
+
+        @media (max-width: 640px) {
+          .footer-partner-logos {
+            --partner-logo-h: 44px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem 1rem;
+            justify-items: center;
+            align-items: center;
+          }
+
+          .footer-partner-logo-item {
+            width: 100%;
+            max-width: 150px;
+            padding: 0.25rem 0.5rem;
+          }
+
+          .footer-partner-logo-item--last {
+            grid-column: 1 / -1;
+            padding-top: 0.5rem;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

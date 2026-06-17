@@ -1,5 +1,11 @@
 {% extends "admin/base.html" %}
 
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{% if title %}{{ title }} | {% endif %}Місто Сили{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Місто Сили — адміністрування</a></h1>
+{% endblock %}
+
 {% block extrastyle %}
 {{ block.super }}
 <style>

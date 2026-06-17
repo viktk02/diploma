@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { fetchLive } from '@/lib/api';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Події',
@@ -18,9 +21,7 @@ interface Event {
 
 async function getEvents(): Promise<Event[]> {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/v1/events/`, {
-      next: { revalidate: 300 },
-    });
+    const res = await fetchLive('/api/v1/events/');
     if (!res.ok) return [];
     return res.json();
   } catch {
@@ -145,7 +146,7 @@ function EventCard({ event, index, muted = false }: { event: Event; index: numbe
           color: '#fff', padding: '0.5rem 0.75rem', textAlign: 'center', minWidth: '52px',
         }}>
           <div style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1 }}>{date.day}</div>
-          <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{date.month.slice(0, 3)}</div>
+          <div style={{ fontSize: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{date.month.slice(0, 3)}</div>
         </div>
       </Link>
 
@@ -161,8 +162,8 @@ function EventCard({ event, index, muted = false }: { event: Event; index: numbe
         </h2>
 
         <div style={{ marginTop: 'auto', paddingTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
-          <Link href={`/events/${event.slug}`}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', color: 'var(--teal)', fontSize: '0.95rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+              <Link href={`/events/${event.slug}`}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', color: 'var(--teal)', fontSize: '1rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.05em' }}
                 className="event-more-link">
             Детальніше <ArrowRight size={14} />
           </Link>

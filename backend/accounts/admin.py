@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User
-from core.admin_mixins import RootOnlyMixin
+from core.admin_mixins import RootOnlyMixin, ShortTitleMixin
 
 
 @admin.register(User)
-class UserAdmin(RootOnlyMixin, BaseUserAdmin):
+class UserAdmin(RootOnlyMixin, ShortTitleMixin, BaseUserAdmin):
     list_display = ("email", "name", "role", "is_active", "google_login_allowed", "date_joined")
     list_filter = ("role", "is_active", "google_login_allowed")
     search_fields = ("email", "name")

@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import Event
-from core.admin_mixins import EditorAccessMixin
+from core.admin_mixins import EditorAccessMixin, ShortTitleMixin
 
 @admin.register(Event)
-class EventAdmin(EditorAccessMixin, admin.ModelAdmin):
+class EventAdmin(EditorAccessMixin, ShortTitleMixin, admin.ModelAdmin):
     list_display = ('title', 'status', 'date', 'location')
     list_filter = ('status', 'date')
     search_fields = ('title', 'description')

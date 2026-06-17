@@ -20,7 +20,12 @@ class Event(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
+    class Meta:
+        verbose_name = 'Подія'
+        verbose_name_plural = 'Події'
+        ordering = ['-date']
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.title) or "report"
