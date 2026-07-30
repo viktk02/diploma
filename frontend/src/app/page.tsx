@@ -3,12 +3,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar } from 'lucide-react';
 import { PageRenderer } from '@/components/PageRenderer';
+import { mediaUrl, siteUrl } from '@/lib/seo';
+
+export const dynamic = 'force-dynamic';
 
 interface PageData {
   key: string;
   title: string;
   meta_title: string;
   meta_description: string;
+  og_image: string | null;
   sections: any[];
 }
 
@@ -65,9 +69,25 @@ async function getLatestEvents(): Promise<Event[]> {
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage('home');
+  const description = page?.meta_description || 'Громадська організація Місто Сили.';
+  const image = mediaUrl(page?.og_image) || siteUrl('/images/logo.png');
   return {
     title: page?.meta_title || 'Місто Сили',
-    description: page?.meta_description || 'Громадська організація Місто Сили.',
+    description,
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      title: page?.meta_title || 'Місто Сили',
+      description,
+      url: siteUrl('/'),
+      type: 'website',
+      images: [image],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [image],
+    },
   };
 }
 
@@ -119,11 +139,24 @@ export default async function HomePage() {
         .home-report-photo img { transition: transform 0.4s ease; }
         .home-report-photo:hover img { transform: scale(1.04); }
 
+        .home-report-title {
+          display: block;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
         /* Звіти — мобільний: вертикальні */
         @media (max-width: 640px) {
           .home-report-card {
             grid-template-columns: 1fr !important;
             height: auto !important;
+          }
+          .home-report-title {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: normal;
           }
           .home-report-photo {
             height: 220px !important;
@@ -191,8 +224,8 @@ export default async function HomePage() {
                           </time>
                         </div>
                       )}
-                      <h3 style={{ fontSize: 'clamp(1.125rem, 2vw, 1.5rem)', fontWeight: 700, lineHeight: 1.3, marginBottom: '0.625rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                        <Link href={`/reports/${report.slug}`} style={{ color: 'var(--charcoal-dark)', textDecoration: 'none' }} className="home-link">
+                      <h3 style={{ fontSize: 'clamp(1.125rem, 2vw, 1.5rem)', fontWeight: 700, lineHeight: 1.3, marginBottom: '0.625rem' }}>
+                        <Link href={`/reports/${report.slug}`} style={{ color: 'var(--charcoal-dark)', textDecoration: 'none', display: 'block' }} className="home-link home-report-title">
                           {report.title}
                         </Link>
                       </h3>
@@ -250,7 +283,7 @@ export default async function HomePage() {
                         </div>
                       </Link>
                       <div style={{ padding: '1.25rem', flex: 1 }}>
-                        <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
                           <Link href={`/events/${event.slug}`} style={{ color: 'var(--charcoal-dark)', textDecoration: 'none' }} className="home-link">
                             {event.title}
                           </Link>

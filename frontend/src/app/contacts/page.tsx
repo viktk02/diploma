@@ -1,9 +1,19 @@
 import { Metadata } from 'next';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { siteUrl } from '@/lib/seo';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Контакти',
   description: 'Контактна інформація організації Місто Сили.',
+  alternates: {
+    canonical: '/contacts',
+  },
+  openGraph: {
+    url: siteUrl('/contacts'),
+    type: 'website',
+  },
 };
 
 interface ContactInfo {
@@ -268,9 +278,9 @@ export default async function ContactsPage() {
               // borderRadius: '50%',
             }} />
 
-            <h3 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--charcoal-dark)', marginBottom: '1rem', position: 'relative' }}>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--charcoal-dark)', marginBottom: '1rem', position: 'relative' }}>
               Маєте питання?
-            </h3>
+            </h2>
             <p style={{ fontSize: '1.125rem', color: 'var(--charcoal)', lineHeight: 1.7, marginBottom: '2rem', position: 'relative' }}>
               Ми відкриті до співпраці, партнерства та нових ідей. Напишіть або зателефонуйте нам.
             </p>

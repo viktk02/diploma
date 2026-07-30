@@ -1,12 +1,22 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, Calendar, FileText, Layout, ArrowRight } from 'lucide-react';
+import { Search, Calendar, FileText, Layout, ArrowRight, LucideIcon } from 'lucide-react';
+import { siteUrl } from '@/lib/seo';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Пошук',
   description: 'Пошук по сайту організації Місто Сили.',
   robots: 'noindex',
+  alternates: {
+    canonical: '/search',
+  },
+  openGraph: {
+    url: siteUrl('/search'),
+    type: 'website',
+  },
 };
 
 interface SearchResult {
@@ -72,7 +82,7 @@ function getResultPreview(result: SearchResult): string {
 }
 
 function TypeBadge({ type }: { type: string }) {
-  const config: Record<string, { label: string; color: string; Icon: React.ComponentType<{ size?: number }> }> = {
+  const config: Record<string, { label: string; color: string; Icon: LucideIcon }> = {
     report: { label: 'Звіт',     color: 'var(--teal)',     Icon: FileText },
     event:  { label: 'Подія',    color: 'var(--red)',      Icon: Calendar },
     page:   { label: 'Сторінка', color: 'var(--charcoal)', Icon: Layout },

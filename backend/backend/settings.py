@@ -188,6 +188,10 @@ AXES_USERNAME_FORM_FIELD = 'username'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
@@ -331,6 +335,15 @@ CKEDITOR_5_CONFIGS = {
 }
 
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"
+
+CSP_FRAME_SRC = [
+    "'self'",
+    "https://www.youtube.com",
+    "https://www.youtube-nocookie.com",
+    "https://player.vimeo.com",
+    "https://www.instagram.com",
+    "https://www.facebook.com",
+]
 
 #logging
 

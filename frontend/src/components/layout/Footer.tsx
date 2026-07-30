@@ -39,11 +39,11 @@ export default async function Footer() {
   const contacts = await getContacts();
 
   return (
-    <footer style={{ background: 'var(--charcoal-dark)', color: 'var(--white)', paddingTop: '4rem', paddingBottom: '2rem', marginTop: 'auto' }}>
+    <footer style={{ background: 'var(--light-gray)', color: 'var(--charcoal-dark)', paddingTop: '4rem', paddingBottom: '2rem', marginTop: 'auto' }}>
       <div className="container">
 
         {/* Основна сітка */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '3rem', paddingBottom: '3rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '3rem', paddingBottom: '3rem', borderBottom: '1px solid rgba(58,57,57,0.12)' }}>
 
           <div>
             <Link href="/" aria-label="Місто Сили — головна">
@@ -52,10 +52,10 @@ export default async function Footer() {
                 alt="Місто Сили"
                 width={160}
                 height={54}
-                style={{ objectFit: 'contain', height: '48px', width: 'auto', filter: 'brightness(0) invert(1)' }}
+                style={{ objectFit: 'contain', height: '48px', width: 'auto' }}
               />
             </Link>
-            <p style={{ marginTop: '1rem', fontSize: '1rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.7 }}>
+            <p style={{ marginTop: '1rem', fontSize: '1rem', color: 'var(--charcoal)', lineHeight: 1.7 }}>
               Громадська організація, що об'єднує людей для розбудови сильних спільнот.
             </p>
             <FooterSocials
@@ -67,48 +67,59 @@ export default async function Footer() {
           </div>
 
           <nav aria-label="Навігація в футері">
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--teal-light)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.25rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.25rem' }}>
               Навігація
             </h3>
             <FooterNav />
           </nav>
 
           <address style={{ fontStyle: 'normal' }}>
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--teal-light)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.25rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.25rem' }}>
               Контакти
             </h3>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: 0, margin: 0 }}>
+              
               {contacts?.email && (
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                  <Mail size={18} style={{ color: 'var(--teal-light)', marginTop: '2px', flexShrink: 0 }} />
-                  <a href={`mailto:${contacts.email}`} style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1rem', textDecoration: 'none' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', flexShrink: 0 }}>
+                    <Mail size={18} style={{ color: 'var(--teal)' }} />
+                  </div>
+                  <a href={`mailto:${contacts.email}`} className="footer-link" style={{ color: 'var(--charcoal)', fontSize: '1rem', textDecoration: 'none', lineHeight: '1.2' }}>
                     {contacts.email}
                   </a>
                 </li>
               )}
+              
               {contacts?.phone && (
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                  <Phone size={18} style={{ color: 'var(--teal-light)', marginTop: '2px', flexShrink: 0 }} />
-                  <a href={`tel:${contacts.phone}`} style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1rem', textDecoration: 'none' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', flexShrink: 0 }}>
+                    <Phone size={18} style={{ color: 'var(--teal)' }} />
+                  </div>
+                  <a href={`tel:${contacts.phone}`} className="footer-link" style={{ color: 'var(--charcoal)', fontSize: '1rem', textDecoration: 'none', lineHeight: '1.2' }}>
                     {contacts.phone}
                   </a>
                 </li>
               )}
+              
               {contacts?.address && (
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                  <MapPin size={18} style={{ color: 'var(--teal-light)', marginTop: '2px', flexShrink: 0 }} />
-                  <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1rem' }}>{contacts.address}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '24px', flexShrink: 0 }}>
+                    <MapPin size={18} style={{ color: 'var(--teal)' }} />
+                  </div>
+                  <span style={{ color: 'var(--charcoal)', fontSize: '1rem', lineHeight: '1.5' }}>
+                    {contacts.address}
+                  </span>
                 </li>
               )}
+              
             </ul>
           </address>
         </div>
 
-        {/* Логотипи партнерів */}
         <div style={{
           paddingTop: '2rem',
           paddingBottom: '2rem',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          borderBottom: '1px solid rgba(58,57,57,0.12)',
         }}
           className="footer-partner-logos"
         >
@@ -134,12 +145,11 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Копірайт */}
         <div style={{ paddingTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.4)' }}>
+          <p style={{ fontSize: '1rem', color: 'var(--charcoal)' }}>
             © {new Date().getFullYear()} {contacts?.organization_name || 'Місто Сили'}. Всі права захищено.
           </p>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.4)' }}>
+          <p style={{ fontSize: '1rem', color: 'var(--charcoal)' }}>
             Громадська організація
           </p>
         </div>

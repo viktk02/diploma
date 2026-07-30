@@ -3,12 +3,20 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { fetchLive } from '@/lib/api';
+import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Події',
   description: 'Заходи та події організації Місто Сили.',
+  alternates: {
+    canonical: '/events',
+  },
+  openGraph: {
+    url: siteUrl('/events'),
+    type: 'website',
+  },
 };
 
 interface Event {

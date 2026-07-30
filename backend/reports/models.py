@@ -1,6 +1,6 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
-from core.validators import validate_file_size
+from core.validators import validate_file_size, validate_image_file
 from core.utils import upload_to_factory, slugify
 from django.utils import timezone
 
@@ -28,7 +28,7 @@ class Report(models.Model):
 
     image = models.ImageField(
         upload_to=upload_to_factory('images/posts'),
-        validators=[validate_file_size],
+        validators=[validate_file_size, validate_image_file],
         blank=True,
     )
 

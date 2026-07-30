@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, MapPin, ArrowLeft, Clock } from 'lucide-react';
 import { fetchLive } from '@/lib/api';
+import { mediaUrl, siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,12 +32,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const event = await getEvent(slug);
   if (!event) return { title: 'Подію не знайдено' };
+  const description = event.description.slice(0, 160);
+  const image = mediaUrl(event.image) || siteUrl('/images/logo.png');
+  const url = siteUrl(`/events/${slug}`);
   return {
     title: event.title,
-    description: event.description.slice(0, 160),
+    description,
+    alternates: {
+      canonical: `/events/${slug}`,
+    },
     openGraph: {
       title: event.title,
-      images: event.image ? [event.image] : [],
+      description,
+      url,
+      type: 'website',
+      images: [image],
     },
   };
 }

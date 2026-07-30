@@ -26,7 +26,8 @@ interface HeaderProps {
 }
 
 export default function Header({ pages = [] }: HeaderProps) {
-  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [isMounted,   setIsMounted]   = useState(false); // Для монтування в DOM
+  const [menuOpen,    setMenuOpen]    = useState(false); // Для CSS-стану відкриття/закриття
   const [dropOpen,    setDropOpen]    = useState(false);
   const [searchOpen,  setSearchOpen]  = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,9 +44,22 @@ export default function Header({ pages = [] }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    setMenuOpen(false);
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
     setDropOpen(false);
     setSearchOpen(false);
+    // При переключенні сторінки закриваємо меню миттєво (без анімації)
+    setMenuOpen(false);
+    setIsMounted(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -67,17 +81,30 @@ export default function Header({ pages = [] }: HeaderProps) {
     return () => document.removeEventListener('keydown', handler);
   }, [searchOpen]);
 
-  // Блокуємо скрол коли меню відкрите
-  useEffect(() => {
+  // --- Виправлення ---
+  const toggleMenu = () => {
     if (menuOpen) {
-      document.body.style.overflow = 'hidden';
+      closeMenu();
     } else {
-      document.body.style.overflow = 'unset';
+      // Крок 1: Монтуємо компонент в DOM
+      setIsMounted(true);
+      // Крок 2: Даємо React/браузеру час на монтування (хоча б 1 кадр),
+      // і лише потім змінюємо клас/стиль для анімації виїзду
+      requestAnimationFrame(() => {
+          setMenuOpen(true);
+      });
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [menuOpen]);
+  };
+
+  const closeMenu = () => {
+    if (!menuOpen) return;
+    // Крок 1: Починаємо CSS-анімацію закриття (змінюємо стилі)
+    setMenuOpen(false);
+    // Крок 2: Чекаємо 300мс (час анімації), і тоді демонтуємо з DOM
+    setTimeout(() => {
+      setIsMounted(false);
+    }, 300);
+  };
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -111,7 +138,7 @@ export default function Header({ pages = [] }: HeaderProps) {
     <>
       <header
         style={{
-          position: 'fixed', // Змінюємо з sticky на fixed
+          position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
@@ -208,7 +235,7 @@ export default function Header({ pages = [] }: HeaderProps) {
               <Search size={22} />
             </Link>
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={toggleMenu}
               aria-label={menuOpen ? 'Закрити меню' : 'Відкрити меню'}
               aria-expanded={menuOpen}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--charcoal)', padding: '0.5rem', display: 'flex', alignItems: 'center' }}
@@ -237,7 +264,8 @@ export default function Header({ pages = [] }: HeaderProps) {
               <button type="submit" className="btn-primary" style={{ padding: '0.625rem 1.25rem', fontSize: '1rem' }}>
                 Шукати
               </button>
-              <button type="button" onClick={() => setSearchOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--charcoal)', padding: '0.5rem', display: 'flex', alignItems: 'center' }}>
+              <button type="button" onClick={() => setSearchOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--charcoal)', padding: '0.5rem', display: 'flex', alignItems: 'center' }} // Видалено дублювання id="searchClose" з внутрішнього функціоналу
+              >
                 <X size={20} />
               </button>
             </form>
@@ -245,11 +273,9 @@ export default function Header({ pages = [] }: HeaderProps) {
         )}
       </header>
 
-      {/* Додаємо відступ зверху для контенту, щоб він не ховався під fixed header */}
-      <div style={{ height: '76px' }} /> {/* Висота вашого header */}
+      <div style={{ height: '76px' }} />
 
-      {/* Мобільне меню */}
-      {menuOpen && (
+      {isMounted && (
         <>
           <div
             style={{
@@ -262,8 +288,11 @@ export default function Header({ pages = [] }: HeaderProps) {
               background: 'rgba(0,0,0,0.5)',
               backdropFilter: 'blur(4px)',
               WebkitBackdropFilter: 'blur(4px)',
+              opacity: menuOpen ? 1 : 0, 
+              transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              pointerEvents: menuOpen ? 'auto' : 'none',
             }}
-            onClick={() => setMenuOpen(false)}
+            onClick={closeMenu}
           />
           
           <nav
@@ -278,15 +307,16 @@ export default function Header({ pages = [] }: HeaderProps) {
               background: '#ffffff',
               padding: '5rem 1.5rem 2rem',
               overflowY: 'auto',
+              overscrollBehaviorY: 'contain',
               boxShadow: '-4px 0 24px rgba(0,0,0,0.15)',
               zIndex: 10000,
-              transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+              transform: menuOpen ? 'translateX(0)' : 'translateX(100%)', 
               transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               style={{
                 position: 'absolute',
                 top: '1rem',

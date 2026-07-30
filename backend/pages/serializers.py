@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Page, PageSection, SectionImage, ContactInfo
+from core.sanitizer import sanitize_html
 
 
 class SectionImageSerializer(serializers.ModelSerializer):
@@ -27,6 +28,11 @@ class PageSectionSerializer(serializers.ModelSerializer):
             "order",
             "images",
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['content'] = sanitize_html(data.get('content'))
+        return data
 
 
 class PageSerializer(serializers.ModelSerializer):

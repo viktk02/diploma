@@ -1,3 +1,5 @@
+from backend.settings import CSP_FRAME_SRC
+
 class SecurityHeadersMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -15,6 +17,10 @@ class SecurityHeadersMiddleware:
             'geolocation=(), camera=(), microphone=(), '
             'payment=(), usb=(), magnetometer=()'
         )
+        if request.is_secure():
+            response['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload'
+        csp_frame_src = " ".join(CSP_FRAME_SRC)
+
 
         csp = (
             "default-src 'self'; "
@@ -23,7 +29,8 @@ class SecurityHeadersMiddleware:
             "font-src 'self' https://fonts.gstatic.com; "
             "img-src 'self' data: blob: http://127.0.0.1:8000 https:; "
             "connect-src 'self'; "
-            "frame-ancestors 'none';"
+            f"frame-src {csp_frame_src}; "
+            "frame-ancestors 'self';"
         )
         response['Content-Security-Policy'] = csp
 

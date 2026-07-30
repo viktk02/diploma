@@ -19,9 +19,32 @@ class PageSectionForm(forms.ModelForm):
             "content": CKEditor5Widget(config_name="extends"),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        image = cleaned_data.get("image")
+        image_alt = (cleaned_data.get("image_alt") or "").strip()
+        if image and not image_alt and (not self.instance.pk or "image" in self.changed_data):
+            self.add_error("image_alt", "Alt-текст обов'язковий, якщо секція містить зображення.")
+        return cleaned_data
+
+
+class SectionImageForm(forms.ModelForm):
+    class Meta:
+        model = SectionImage
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        image = cleaned_data.get("image")
+        alt = (cleaned_data.get("alt") or "").strip()
+        if image and not alt and (not self.instance.pk or "image" in self.changed_data):
+            self.add_error("alt", "Alt-текст обов'язковий, якщо фото додається до галереї.")
+        return cleaned_data
+
 
 class SectionImageInline(nested_admin.NestedTabularInline):
     model    = SectionImage
+    form     = SectionImageForm
     extra    = 0
     fields   = ("image", "alt", "caption", "order")
     ordering = ("order",)

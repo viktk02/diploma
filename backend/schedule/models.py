@@ -1,5 +1,6 @@
 from django.db import models
 from core.utils import slugify
+from core.validators import validate_file_size, validate_image_file
 
 class Event(models.Model):
     class Status(models.TextChoices):
@@ -11,7 +12,7 @@ class Event(models.Model):
     description = models.TextField()
     date = models.DateTimeField()
     location = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='images/events')
+    image = models.ImageField(upload_to='images/events', validators=[validate_file_size, validate_image_file])
     status = models.CharField(
         max_length=10,
         db_index=True,

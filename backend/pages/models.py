@@ -1,6 +1,6 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
-from core.validators import validate_file_size
+from core.validators import validate_file_size, validate_image_file
 from core.utils import upload_to_factory
 
 
@@ -18,7 +18,7 @@ class Page(models.Model):
     og_image = models.ImageField(
         upload_to=upload_to_factory("images/og"),
         blank=True,
-        validators=[validate_file_size],
+        validators=[validate_file_size, validate_image_file],
         verbose_name="OG-зображення",
     )
     robots = models.CharField(max_length=50, default="index,follow", verbose_name="Robots meta")
@@ -64,7 +64,7 @@ class PageSection(models.Model):
     image    = models.ImageField(
         upload_to=upload_to_factory("images/sections"),
         blank=True,
-        validators=[validate_file_size],
+        validators=[validate_file_size, validate_image_file],
         verbose_name="Зображення",
     )
     image_alt    = models.CharField(max_length=200, blank=True, verbose_name="Alt-текст зображення")
@@ -92,7 +92,7 @@ class SectionImage(models.Model):
     )
     image   = models.ImageField(
         upload_to=upload_to_factory("images/carousel"),
-        validators=[validate_file_size],
+        validators=[validate_file_size, validate_image_file],
         verbose_name="Фото",
     )
     alt     = models.CharField(max_length=200, blank=True, verbose_name="Alt-текст")
@@ -121,7 +121,7 @@ class ContactInfo(models.Model):
     logo = models.ImageField(
         upload_to=upload_to_factory("images/org"),
         blank=True,
-        validators=[validate_file_size],
+        validators=[validate_file_size, validate_image_file],
         verbose_name="Логотип",
     )
 

@@ -2,8 +2,12 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { siteUrl } from '@/lib/seo';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
     default: 'Місто Сили',
     template: '%s | Місто Сили',
@@ -15,6 +19,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'uk_UA',
     siteName: 'Місто Сили',
+    url: siteUrl('/'),
   },
 };
 

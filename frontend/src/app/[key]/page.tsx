@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PageRenderer } from '@/components/PageRenderer';
+import { buildBreadcrumbs, excerptFromHtml, mediaUrl, siteUrl } from '@/lib/seo';
 
 interface PageData {
   key: string;
@@ -12,7 +13,7 @@ interface PageData {
   sections: any[];
 }
 
-const RESERVED_KEYS = ['reports', 'events', 'contacts', 'pages', 'api', 'admin', 'auth', 'search'];
+const RESERVED_KEYS = ['home', 'reports', 'events', 'contacts', 'pages', 'api', 'admin', 'auth', 'search'];
 
 async function getPage(key: string): Promise<PageData | null> {
   try {
@@ -31,14 +32,22 @@ export async function generateMetadata({ params }: { params: Promise<{ key: stri
   if (RESERVED_KEYS.includes(key)) return { title: 'Сторінку не знайдено' };
   const page = await getPage(key);
   if (!page) return { title: 'Сторінку не знайдено' };
+  const description = page.meta_description || excerptFromHtml(page.sections?.[0]?.content) || page.title;
+  const url = siteUrl(`/${key}`);
+  const image = mediaUrl(page.og_image) || siteUrl('/images/logo.png');
   return {
     title: page.meta_title || page.title,
-    description: page.meta_description,
+    description,
+    alternates: {
+      canonical: `/${key}`,
+    },
     robots: page.robots,
     openGraph: {
       title: page.meta_title || page.title,
-      description: page.meta_description,
-      images: page.og_image ? [page.og_image] : [],
+      description,
+      url,
+      type: 'website',
+      images: [image],
     },
   };
 }
@@ -50,9 +59,14 @@ export default async function DynamicPage({ params }: { params: Promise<{ key: s
 
   const page = await getPage(key);
   if (!page) notFound();
+  const breadcrumbSchema = buildBreadcrumbs([
+    { name: 'Головна', url: '/' },
+    { name: page.title, url: `/${key}` },
+  ]);
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {page.sections?.length > 0 ? (
         <PageRenderer sections={page.sections} />
       ) : (

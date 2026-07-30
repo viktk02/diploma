@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { JSX } from 'react/jsx-runtime';
 
 const NAV_LINKS = [
   { href: '/',         label: 'Головна' },
@@ -52,7 +53,7 @@ export function FooterNav() {
           <Link
             href={link.href}
             className="footer-link"
-            style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1rem', textDecoration: 'none' }}
+            style={{ color: 'var(--charcoal)', fontSize: '1rem', textDecoration: 'none' }}
           >
             {link.label}
           </Link>
@@ -87,14 +88,14 @@ export function FooterSocials({ facebook, instagram, youtube, telegram }: {
           rel="noopener noreferrer"
           aria-label={label}
           className="social-link"
-          style={{ color: 'rgba(255,255,255,0.65)', transition: 'color 0.2s', display: 'flex', alignItems: 'center' }}
+          style={{ color: 'var(--charcoal)', transition: 'color 0.2s', display: 'flex', alignItems: 'center' }}
         >
           <Icon />
         </a>
       ))}
       <style>{`
-        .social-link:hover { color: var(--teal-light) !important; }
-        .footer-link:hover { color: var(--teal-light) !important; }
+        .social-link:hover { color: var(--teal-dark) !important; }
+        .footer-link:hover { color: var(--teal-dark) !important; }
       `}</style>
     </div>
   );

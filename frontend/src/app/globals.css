@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: 'Alumni Sans';
   src: url('/fonts/AlumniSans-Light.ttf') format('truetype');
   font-weight: 300;
@@ -17,7 +17,9 @@
   src: url('/fonts/AlumniSans-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
-}
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -36,7 +38,7 @@
   --light-gray: #efefed;
   --border:     #e0e0dd;
 
-  --font-main: 'Alumni Sans', sans-serif;
+  --font-main: 'Montserrat', sans-serif;
 
   --container: 1200px;
   --section-py: 5rem;
@@ -49,13 +51,13 @@
 }
 
 html {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 body {
   font-family: var(--font-main);
   font-weight: 500;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: var(--charcoal);
   background-color: var(--white);
   -webkit-font-smoothing: antialiased;
@@ -70,13 +72,13 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--charcoal-dark);
 }
 
-h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
-h2 { font-size: clamp(2rem, 4vw, 3rem); }
-h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
-h4 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+h1 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); }
+h2 { font-size: clamp(1.75rem, 3.4vw, 2.6rem); }
+h3 { font-size: clamp(1.35rem, 2.5vw, 1.8rem); }
+h4 { font-size: clamp(1.1rem, 1.8vw, 1.3rem); }
 
 p {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 500;
   line-height: 1.7;
 }
@@ -105,7 +107,7 @@ a:hover {
   background: var(--teal);
   color: var(--white);
   font-family: var(--font-main);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -129,7 +131,7 @@ a:hover {
   background: transparent;
   color: var(--teal);
   font-family: var(--font-main);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -152,7 +154,7 @@ a:hover {
   background: var(--red);
   color: var(--white);
   font-family: var(--font-main);
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -172,7 +174,7 @@ a:hover {
 }
 
 .section-title {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
   font-weight: 700;
   color: var(--charcoal-dark);
   position: relative;
